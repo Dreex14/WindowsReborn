@@ -1,0 +1,18 @@
+# Compilación
+bin/
+obj/
+dist/
+artifacts/
+*.user
+.vs/
+TestResults/
+
+# Datos locales del modo portátil
+Data/
+portable.flag
+
+# Python
+__pycache__/
+
+# Configuración local del editor
+.claude/
