@@ -1,0 +1,449 @@
+// Catálogo de ajustes de Windows Reborn.
+// Claves con "/" (se convierten a "\"); macros: @adv, @explorer, @cdm, @search, @searchsettings,
+// @personalize, @consent, @policies, @services. "off": null o ausente = borrar el valor (lo que trae Windows).
+// risk: 1 seguro, 2 moderado, 3 avanzado. No se incluye nada que desactive Defender, SmartScreen,
+// UAC, Windows Update, el firewall ni el arranque.
+[
+  // ---------------- Explorador ----------------
+  { "id": "explorer.show-extensions", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@adv", "name": "HideFileExt", "on": 0, "off": 1 } ],
+    "es": { "title": "Mostrar extensiones de archivo", "desc": "Muestra .exe, .pdf, .jpg… al final del nombre. Ayuda a detectar archivos engañosos." },
+    "en": { "title": "Show file extensions", "desc": "Shows .exe, .pdf, .jpg… at the end of names. Helps spot misleading files." } },
+
+  { "id": "explorer.show-hidden", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@adv", "name": "Hidden", "on": 1, "off": 2 } ],
+    "es": { "title": "Mostrar archivos y carpetas ocultos", "desc": "Muestra elementos con el atributo oculto, como AppData." },
+    "en": { "title": "Show hidden files and folders", "desc": "Shows items with the hidden attribute, such as AppData." } },
+
+  { "id": "explorer.show-protected", "category": "explorer", "risk": 2, "restart": "explorer",
+    "settings": [ { "key": "@adv", "name": "ShowSuperHidden", "on": 1, "off": 0 } ],
+    "es": { "title": "Mostrar archivos protegidos del sistema", "desc": "Muestra archivos como desktop.ini o pagefile.sys.", "warn": "Borrar o mover estos archivos puede dañar Windows o tus carpetas. Úsalo solo cuando lo necesites." },
+    "en": { "title": "Show protected operating system files", "desc": "Shows files such as desktop.ini or pagefile.sys.", "warn": "Deleting or moving these files can break Windows or your folders. Use it only when needed." } },
+
+  { "id": "explorer.compact-view", "category": "explorer", "risk": 1, "restart": "explorer", "minBuild": 22000,
+    "settings": [ { "key": "@adv", "name": "UseCompactMode", "on": 1, "off": 0 } ],
+    "es": { "title": "Vista compacta", "desc": "Reduce el espacio entre elementos del Explorador para ver más archivos a la vez." },
+    "en": { "title": "Compact view", "desc": "Reduces spacing between File Explorer items to show more files at once." } },
+
+  { "id": "explorer.open-this-pc", "category": "explorer", "risk": 1,
+    "settings": [ { "key": "@adv", "name": "LaunchTo", "on": 1, "off": null } ],
+    "es": { "title": "Abrir el Explorador en «Este equipo»", "desc": "Al abrir el Explorador se muestran las unidades en lugar de Inicio/Acceso rápido." },
+    "en": { "title": "Open File Explorer to \"This PC\"", "desc": "File Explorer opens on your drives instead of Home/Quick access." } },
+
+  { "id": "explorer.full-path", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@explorer/CabinetState", "name": "FullPath", "on": 1, "off": 0 } ],
+    "es": { "title": "Mostrar la ruta completa en la barra de título", "desc": "Muestra C:\\Carpeta\\Subcarpeta en lugar de solo el nombre de la carpeta." },
+    "en": { "title": "Show full path in the title bar", "desc": "Shows C:\\Folder\\Subfolder instead of just the folder name." } },
+
+  { "id": "explorer.checkboxes", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@adv", "name": "AutoCheckSelect", "on": 1, "off": 0 } ],
+    "es": { "title": "Casillas para seleccionar elementos", "desc": "Añade una casilla a cada archivo para seleccionar varios sin teclado." },
+    "en": { "title": "Item check boxes", "desc": "Adds a check box to each file to select several without the keyboard." } },
+
+  { "id": "explorer.no-recent", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [
+      { "key": "@explorer", "name": "ShowRecent", "on": 0, "off": null },
+      { "key": "@explorer", "name": "ShowFrequent", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar archivos recientes y carpetas frecuentes", "desc": "Inicio/Acceso rápido deja de mostrar lo último que abriste." },
+    "en": { "title": "Hide recent files and frequent folders", "desc": "Home/Quick access stops showing what you opened recently." } },
+
+  { "id": "explorer.classic-context-menu", "category": "explorer", "risk": 2, "restart": "explorer", "minBuild": 22000,
+    "settings": [ { "key": "Software/Classes/CLSID/{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}/InprocServer32", "name": "", "type": "string", "on": "", "off": null } ],
+    "offDeletesKey": "Software/Classes/CLSID/{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}",
+    "es": { "title": "Menú contextual clásico (Windows 10)", "desc": "El clic derecho muestra todas las opciones sin pasar por «Mostrar más opciones». Desactívalo para volver al menú moderno.", "warn": "Técnica comunitaria no documentada: una actualización de Windows podría dejar de respetarla." },
+    "en": { "title": "Classic context menu (Windows 10)", "desc": "Right-click shows every option without \"Show more options\". Turn it off to return to the modern menu.", "warn": "Undocumented community technique: a Windows update could stop honouring it." } },
+
+  { "id": "explorer.hide-gallery", "category": "explorer", "risk": 2, "restart": "explorer", "minBuild": 22621,
+    "settings": [ { "key": "Software/Classes/CLSID/{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}", "name": "System.IsPinnedToNameSpaceTree", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar «Galería» en el panel de navegación", "desc": "Quita el acceso a Galería del panel izquierdo del Explorador.", "warn": "Usa una clave de registro no documentada." },
+    "en": { "title": "Hide \"Gallery\" from the navigation pane", "desc": "Removes Gallery from File Explorer's left pane.", "warn": "Uses an undocumented registry key." } },
+
+  { "id": "explorer.hide-home", "category": "explorer", "risk": 2, "restart": "explorer", "minBuild": 22621,
+    "settings": [ { "key": "Software/Classes/CLSID/{f874310e-b6b7-47dc-bc84-b9e6b38f5903}", "name": "System.IsPinnedToNameSpaceTree", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar «Inicio» en el panel de navegación", "desc": "Quita la entrada Inicio del panel izquierdo. Combínalo con «Abrir en Este equipo».", "warn": "Usa una clave de registro no documentada." },
+    "en": { "title": "Hide \"Home\" from the navigation pane", "desc": "Removes Home from the left pane. Pair it with \"Open to This PC\".", "warn": "Uses an undocumented registry key." } },
+
+  { "id": "explorer.no-autoplay", "category": "explorer", "risk": 1,
+    "settings": [ { "key": "@explorer/AutoplayHandlers", "name": "DisableAutoplay", "on": 1, "off": 0 } ],
+    "es": { "title": "Desactivar la reproducción automática", "desc": "Windows no abre nada por su cuenta al conectar un USB, un disco o un móvil." },
+    "en": { "title": "Turn off AutoPlay", "desc": "Windows opens nothing on its own when you connect a USB drive, disc or phone." } },
+
+  { "id": "explorer.no-shake", "category": "explorer", "risk": 1, "minBuild": 22000,
+    "settings": [ { "key": "@adv", "name": "DisallowShaking", "on": 1, "off": null } ],
+    "es": { "title": "Desactivar «agitar para minimizar»", "desc": "Evita que agitar una ventana minimice las demás." },
+    "en": { "title": "Turn off \"shake to minimise\"", "desc": "Stops shaking a window from minimising the others." } },
+
+  // ---------------- Barra de tareas ----------------
+  { "id": "taskbar.align-left", "category": "taskbar", "risk": 1, "minBuild": 22000,
+    "settings": [ { "key": "@adv", "name": "TaskbarAl", "on": 0, "off": null } ],
+    "es": { "title": "Alinear la barra de tareas a la izquierda", "desc": "Coloca Inicio y los iconos a la izquierda, como en Windows 10." },
+    "en": { "title": "Align the taskbar to the left", "desc": "Places Start and icons on the left, as in Windows 10." } },
+
+  { "id": "taskbar.search", "category": "taskbar", "risk": 1, "choices": [ "hidden", "icon", "box" ],
+    "settings": [ { "key": "@search", "name": "SearchboxTaskbarMode", "values": { "hidden": 0, "icon": 1, "box": 2 } } ],
+    "es": { "title": "Búsqueda en la barra de tareas", "desc": "Elige si se muestra el cuadro de búsqueda, solo el icono o nada.", "choices": { "hidden": "Oculta", "icon": "Solo icono", "box": "Cuadro" } },
+    "en": { "title": "Search on the taskbar", "desc": "Choose a search box, an icon only or nothing.", "choices": { "hidden": "Hidden", "icon": "Icon only", "box": "Box" } } },
+
+  { "id": "taskbar.hide-task-view", "category": "taskbar", "risk": 1,
+    "settings": [ { "key": "@adv", "name": "ShowTaskViewButton", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar el botón Vista de tareas", "desc": "Quita el botón de escritorios virtuales. Win+Tab sigue funcionando." },
+    "en": { "title": "Hide the Task view button", "desc": "Removes the virtual desktops button. Win+Tab still works." } },
+
+  { "id": "taskbar.combine", "category": "taskbar", "risk": 1, "builds": [ [ 0, 21999 ], [ 22631, 0 ] ], "restart": "explorer", "choices": [ "always", "full", "never" ],
+    "settings": [ { "key": "@adv", "name": "TaskbarGlomLevel", "values": { "always": 0, "full": 1, "never": 2 } } ],
+    "es": { "title": "Combinar botones de la barra de tareas", "desc": "Agrupa las ventanas de una misma aplicación o muestra cada una con su nombre.", "choices": { "always": "Siempre", "full": "Si está llena", "never": "Nunca" } },
+    "en": { "title": "Combine taskbar buttons", "desc": "Group windows of the same app or show each with its label.", "choices": { "always": "Always", "full": "When full", "never": "Never" } } },
+
+  { "id": "taskbar.seconds", "category": "taskbar", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@adv", "name": "ShowSecondsInSystemClock", "on": 1, "off": null } ],
+    "es": { "title": "Mostrar segundos en el reloj", "desc": "El reloj de la barra de tareas muestra los segundos (consume algo más de energía)." },
+    "en": { "title": "Show seconds in the clock", "desc": "The taskbar clock shows seconds (uses slightly more power)." } },
+
+  { "id": "taskbar.end-task", "category": "taskbar", "risk": 1, "minBuild": 22631,
+    "settings": [ { "key": "@adv/TaskbarDeveloperSettings", "name": "TaskbarEndTask", "on": 1, "off": null } ],
+    "es": { "title": "«Finalizar tarea» al hacer clic derecho", "desc": "Añade una opción para cerrar una aplicación bloqueada desde su icono." },
+    "en": { "title": "\"End task\" on right-click", "desc": "Adds an option to close a frozen app from its taskbar icon." } },
+
+  { "id": "taskbar.hide-chat", "category": "taskbar", "risk": 1, "builds": [ [ 22000, 22630 ] ],
+    "settings": [ { "key": "@adv", "name": "TaskbarMn", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar el icono de Chat (Teams)", "desc": "Quita el acceso a Chat de las primeras versiones de Windows 11." },
+    "en": { "title": "Hide the Chat (Teams) icon", "desc": "Removes Chat from early Windows 11 versions." } },
+
+  { "id": "taskbar.hide-copilot", "category": "taskbar", "risk": 1, "builds": [ [ 22631, 26099 ] ],
+    "settings": [ { "key": "@adv", "name": "ShowCopilotButton", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar el botón de Copilot", "desc": "Quita el botón de Copilot de la barra de tareas (Windows 11 23H2)." },
+    "en": { "title": "Hide the Copilot button", "desc": "Removes the Copilot button from the taskbar (Windows 11 23H2)." } },
+
+  { "id": "taskbar.no-widgets", "category": "taskbar", "risk": 2, "minBuild": 22000, "restart": "explorer",
+    "settings": [ { "hive": "HKLM", "key": "Software/Policies/Microsoft/Dsh", "name": "AllowNewsAndInterests", "on": 0, "off": null } ],
+    "es": { "title": "Desactivar Widgets", "desc": "Usa la directiva oficial para quitar el panel de Widgets y su icono. Pide permiso de administrador.", "warn": "Configuración mostrará algunos ajustes como «administrados por la organización»." },
+    "en": { "title": "Turn off Widgets", "desc": "Uses the official policy to remove the Widgets board and icon. Needs administrator permission.", "warn": "Settings will show some options as \"managed by your organization\"." } },
+
+  { "id": "taskbar.all-tray-icons", "category": "taskbar", "risk": 1, "maxBuild": 21999, "restart": "explorer",
+    "settings": [ { "key": "@explorer", "name": "EnableAutoTray", "on": 0, "off": null } ],
+    "es": { "title": "Mostrar siempre todos los iconos del área de notificación", "desc": "Windows 10: no oculta iconos detrás de la flecha." },
+    "en": { "title": "Always show all notification area icons", "desc": "Windows 10: no icons hidden behind the arrow." } },
+
+  // ---------------- Inicio ----------------
+  { "id": "start.no-recent-docs", "category": "start", "risk": 1,
+    "settings": [ { "key": "@adv", "name": "Start_TrackDocs", "on": 0, "off": null } ],
+    "es": { "title": "No mostrar archivos recientes en Inicio", "desc": "Inicio, las Jump Lists y el Explorador dejan de listar archivos abiertos recientemente." },
+    "en": { "title": "Don't show recent files in Start", "desc": "Start, Jump Lists and File Explorer stop listing recently opened files." } },
+
+  { "id": "start.no-recommendations", "category": "start", "risk": 2, "minBuild": 22621,
+    "settings": [ { "key": "@adv", "name": "Start_IrisRecommendations", "on": 0, "off": null } ],
+    "es": { "title": "Sin recomendaciones de consejos y aplicaciones", "desc": "Inicio deja de recomendar consejos, accesos directos y aplicaciones nuevas.", "warn": "Microsoft cambia a menudo esta sección; en algunas compilaciones puede no tener efecto." },
+    "en": { "title": "No tips and app recommendations", "desc": "Start stops recommending tips, shortcuts and new apps.", "warn": "Microsoft changes this section often; it may have no effect on some builds." } },
+
+  { "id": "start.layout", "category": "start", "risk": 1, "minBuild": 22621, "choices": [ "default", "pins", "recs" ],
+    "settings": [ { "key": "@adv", "name": "Start_Layout", "values": { "default": 0, "pins": 1, "recs": 2 } } ],
+    "es": { "title": "Distribución del menú Inicio", "desc": "Más espacio para aplicaciones ancladas o para recomendaciones.", "choices": { "default": "Predeterminada", "pins": "Más anclados", "recs": "Más recomendaciones" } },
+    "en": { "title": "Start menu layout", "desc": "More room for pinned apps or for recommendations.", "choices": { "default": "Default", "pins": "More pins", "recs": "More recommendations" } } },
+
+  { "id": "start.no-account-notifications", "category": "start", "risk": 1, "minBuild": 22621,
+    "settings": [ { "key": "@adv", "name": "Start_AccountNotifications", "on": 0, "off": null } ],
+    "es": { "title": "Sin avisos de la cuenta en Inicio", "desc": "Oculta las notificaciones de la cuenta Microsoft junto a tu foto." },
+    "en": { "title": "No account notifications in Start", "desc": "Hides Microsoft account notices next to your picture." } },
+
+  { "id": "start.no-suggestions-win10", "category": "start", "risk": 1, "maxBuild": 21999,
+    "settings": [ { "key": "@cdm", "name": "SubscribedContent-338388Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin sugerencias en Inicio", "desc": "Windows 10: deja de mostrar aplicaciones sugeridas en el menú Inicio." },
+    "en": { "title": "No suggestions in Start", "desc": "Windows 10: stops showing suggested apps in Start." } },
+
+  // ---------------- Apariencia ----------------
+  { "id": "appearance.dark-apps", "category": "appearance", "risk": 1,
+    "settings": [ { "key": "@personalize", "name": "AppsUseLightTheme", "on": 0, "off": 1 } ],
+    "es": { "title": "Modo oscuro para aplicaciones", "desc": "Las aplicaciones que siguen el tema de Windows usan colores oscuros." },
+    "en": { "title": "Dark mode for apps", "desc": "Apps that follow the Windows theme use dark colours." } },
+
+  { "id": "appearance.dark-system", "category": "appearance", "risk": 1,
+    "settings": [ { "key": "@personalize", "name": "SystemUsesLightTheme", "on": 0, "off": 1 } ],
+    "es": { "title": "Modo oscuro para Windows", "desc": "Barra de tareas, Inicio y Centro de actividades en colores oscuros." },
+    "en": { "title": "Dark mode for Windows", "desc": "Taskbar, Start and action center in dark colours." } },
+
+  { "id": "appearance.no-transparency", "category": "appearance", "risk": 1,
+    "settings": [ { "key": "@personalize", "name": "EnableTransparency", "on": 0, "off": 1 } ],
+    "es": { "title": "Desactivar efectos de transparencia", "desc": "Fondos opacos en la barra de tareas y las ventanas; mejora la legibilidad." },
+    "en": { "title": "Turn off transparency effects", "desc": "Opaque taskbar and window backgrounds; improves readability." } },
+
+  { "id": "appearance.accent-titlebars", "category": "appearance", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Windows/DWM", "name": "ColorPrevalence", "on": 1, "off": 0 } ],
+    "es": { "title": "Color de énfasis en barras de título", "desc": "Las barras de título y los bordes de las ventanas usan tu color de énfasis." },
+    "en": { "title": "Accent colour on title bars", "desc": "Title bars and window borders use your accent colour." } },
+
+  { "id": "appearance.this-pc-desktop", "category": "appearance", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@explorer/HideDesktopIcons/NewStartPanel", "name": "{20D04FE0-3AEA-1069-A2D8-08002B30309D}", "on": 0, "off": null } ],
+    "es": { "title": "Icono «Este equipo» en el escritorio", "desc": "Muestra el acceso a Este equipo en el escritorio." },
+    "en": { "title": "\"This PC\" icon on the desktop", "desc": "Shows the This PC icon on the desktop." } },
+
+  { "id": "appearance.no-snap-flyout", "category": "appearance", "risk": 1, "minBuild": 22000,
+    "settings": [ { "key": "@adv", "name": "EnableSnapAssistFlyout", "on": 0, "off": null } ],
+    "es": { "title": "Sin diseños de ajuste al pasar por Maximizar", "desc": "No aparece el panel de diseños al dejar el ratón sobre el botón Maximizar." },
+    "en": { "title": "No snap layouts on the Maximize button", "desc": "The layouts panel no longer appears when hovering Maximize." } },
+
+  { "id": "appearance.menu-delay", "category": "appearance", "risk": 1, "restart": "signOut",
+    "settings": [ { "key": "Control Panel/Desktop", "name": "MenuShowDelay", "type": "string", "on": "100", "off": "400" } ],
+    "es": { "title": "Menús más rápidos", "desc": "Reduce la espera al abrir submenús de 400 ms a 100 ms." },
+    "en": { "title": "Faster menus", "desc": "Cuts the submenu delay from 400 ms to 100 ms." } },
+
+  // ---------------- Privacidad ----------------
+  { "id": "privacy.advertising-id", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Windows/CurrentVersion/AdvertisingInfo", "name": "Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Desactivar el identificador de publicidad", "desc": "Las aplicaciones no pueden usar un identificador para mostrarte anuncios personalizados." },
+    "en": { "title": "Turn off the advertising ID", "desc": "Apps can't use an ID to show you personalised ads." } },
+
+  { "id": "privacy.tailored-experiences", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Windows/CurrentVersion/Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin experiencias personalizadas", "desc": "Microsoft no usa tus datos de diagnóstico para consejos y anuncios a medida." },
+    "en": { "title": "No tailored experiences", "desc": "Microsoft doesn't use your diagnostic data for tailored tips and ads." } },
+
+  { "id": "privacy.language-list", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Control Panel/International/User Profile", "name": "HttpAcceptLanguageOptOut", "on": 1, "off": null } ],
+    "es": { "title": "No compartir tu lista de idiomas con sitios web", "desc": "Las webs no reciben tu lista de idiomas para mostrar contenido local." },
+    "en": { "title": "Don't share your language list with websites", "desc": "Websites don't receive your language list for local content." } },
+
+  { "id": "privacy.app-launch-tracking", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "@adv", "name": "Start_TrackProgs", "on": 0, "off": null } ],
+    "es": { "title": "No registrar las aplicaciones que abres", "desc": "Windows deja de usar tus aperturas para mejorar Inicio y la búsqueda; desaparece «Más usadas»." },
+    "en": { "title": "Don't track app launches", "desc": "Windows stops using your launches to improve Start and search; \"Most used\" disappears." } },
+
+  { "id": "privacy.settings-suggestions", "category": "privacy", "risk": 1,
+    "settings": [
+      { "key": "@cdm", "name": "SubscribedContent-338393Enabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "SubscribedContent-353694Enabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "SubscribedContent-353696Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin contenido sugerido en Configuración", "desc": "La aplicación Configuración deja de sugerir contenido y funciones." },
+    "en": { "title": "No suggested content in Settings", "desc": "The Settings app stops suggesting content and features." } },
+
+  { "id": "privacy.tips", "category": "privacy", "risk": 1,
+    "settings": [
+      { "key": "@cdm", "name": "SubscribedContent-338389Enabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "SoftLandingEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin consejos ni sugerencias al usar Windows", "desc": "Desactiva las notificaciones de trucos y sugerencias." },
+    "en": { "title": "No tips and suggestions while using Windows", "desc": "Turns off tip and suggestion notifications." } },
+
+  { "id": "privacy.welcome-experience", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "@cdm", "name": "SubscribedContent-310093Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin pantalla de bienvenida tras actualizar", "desc": "No se muestran las novedades de Windows después de las actualizaciones." },
+    "en": { "title": "No welcome experience after updates", "desc": "Windows doesn't show what's new after updates." } },
+
+  { "id": "privacy.finish-setup", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Windows/CurrentVersion/UserProfileEngagement", "name": "ScoobeSystemSettingEnabled", "on": 0, "off": null } ],
+    "es": { "title": "Sin «Terminemos de configurar el dispositivo»", "desc": "Evita la pantalla que propone servicios de Microsoft tras algunas actualizaciones." },
+    "en": { "title": "No \"Let's finish setting up your device\"", "desc": "Avoids the screen that pushes Microsoft services after some updates." } },
+
+  { "id": "privacy.lockscreen-tips", "category": "privacy", "risk": 1,
+    "settings": [
+      { "key": "@cdm", "name": "RotatingLockScreenOverlayEnabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "SubscribedContent-338387Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin datos curiosos ni consejos en la pantalla de bloqueo", "desc": "La pantalla de bloqueo deja de mostrar textos promocionales." },
+    "en": { "title": "No fun facts or tips on the lock screen", "desc": "The lock screen stops showing promotional text." } },
+
+  { "id": "privacy.silent-app-installs", "category": "privacy", "risk": 2,
+    "settings": [
+      { "key": "@cdm", "name": "SilentInstalledAppsEnabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "PreInstalledAppsEnabled", "on": 0, "off": 1 },
+      { "key": "@cdm", "name": "OemPreInstalledAppsEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Bloquear instalaciones promocionales automáticas", "desc": "Impide que Windows instale por su cuenta aplicaciones sugeridas para tu cuenta.", "warn": "No desinstala lo que ya esté instalado; usa «Aplicaciones preinstaladas» para eso." },
+    "en": { "title": "Block automatic promotional installs", "desc": "Stops Windows installing suggested apps for your account on its own.", "warn": "It doesn't remove what is already installed; use \"Preinstalled apps\" for that." } },
+
+  { "id": "privacy.feedback-requests", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Siuf/Rules", "name": "NumberOfSIUFInPeriod", "on": 0, "off": null } ],
+    "es": { "title": "Windows no pide comentarios", "desc": "Equivale a «Frecuencia de comentarios: nunca»." },
+    "en": { "title": "Windows never asks for feedback", "desc": "Same as \"Feedback frequency: never\"." } },
+
+  { "id": "privacy.typing-data", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Input/TIPC", "name": "Enabled", "on": 0, "off": 1 } ],
+    "es": { "title": "No enviar datos de escritura", "desc": "Desactiva «Mejorar la entrada manuscrita y la escritura»." },
+    "en": { "title": "Don't send typing data", "desc": "Turns off \"Improve inking and typing\"." } },
+
+  { "id": "privacy.inking-personalization", "category": "privacy", "risk": 2,
+    "settings": [
+      { "key": "Software/Microsoft/InputPersonalization", "name": "RestrictImplicitInkCollection", "on": 1, "off": 0 },
+      { "key": "Software/Microsoft/InputPersonalization", "name": "RestrictImplicitTextCollection", "on": 1, "off": 0 },
+      { "key": "Software/Microsoft/InputPersonalization/TrainedDataStore", "name": "HarvestContacts", "on": 0, "off": 1 },
+      { "key": "Software/Microsoft/Personalization/Settings", "name": "AcceptedPrivacyPolicy", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin diccionario personal de escritura", "desc": "Windows deja de aprender de lo que escribes y de tus contactos.", "warn": "Las sugerencias de texto y el reconocimiento de escritura a mano pueden ser menos precisos." },
+    "en": { "title": "No personal typing dictionary", "desc": "Windows stops learning from what you type and your contacts.", "warn": "Text suggestions and handwriting recognition may be less accurate." } },
+
+  { "id": "privacy.online-speech", "category": "privacy", "risk": 1,
+    "settings": [ { "key": "Software/Microsoft/Speech_OneCore/Settings/OnlineSpeechPrivacy", "name": "HasAccepted", "on": 0, "off": 1 } ],
+    "es": { "title": "Desactivar el reconocimiento de voz en línea", "desc": "La voz no se envía a los servicios en la nube de Microsoft." },
+    "en": { "title": "Turn off online speech recognition", "desc": "Your voice isn't sent to Microsoft cloud services." } },
+
+  { "id": "privacy.error-reporting", "category": "privacy", "risk": 2,
+    "settings": [ { "key": "Software/Microsoft/Windows/Windows Error Reporting", "name": "Disabled", "on": 1, "off": null } ],
+    "es": { "title": "No enviar informes de errores", "desc": "Tu cuenta deja de enviar informes de bloqueos a Microsoft.", "warn": "Microsoft no podrá ofrecerte soluciones conocidas para un error." },
+    "en": { "title": "Don't send error reports", "desc": "Your account stops sending crash reports to Microsoft.", "warn": "Microsoft won't be able to offer known fixes for a crash." } },
+
+  { "id": "privacy.no-copilot", "category": "privacy", "risk": 2, "minBuild": 22621,
+    "settings": [ { "key": "@policies/WindowsCopilot", "name": "TurnOffWindowsCopilot", "on": 1, "off": null } ],
+    "es": { "title": "Desactivar Windows Copilot (directiva)", "desc": "Directiva de usuario que desactiva Copilot integrado en Windows.", "warn": "En Windows 11 24H2 Copilot es una aplicación; para quitarla usa «Aplicaciones preinstaladas»." },
+    "en": { "title": "Turn off Windows Copilot (policy)", "desc": "User policy that turns off Copilot built into Windows.", "warn": "On Windows 11 24H2 Copilot is an app; use \"Preinstalled apps\" to remove it." } },
+
+  { "id": "privacy.no-recall", "category": "privacy", "risk": 2, "minBuild": 26100,
+    "settings": [ { "key": "@policies/WindowsAI", "name": "DisableAIDataAnalysis", "on": 1, "off": null } ],
+    "es": { "title": "Desactivar Recall (instantáneas)", "desc": "Directiva de usuario que impide guardar instantáneas de la pantalla en equipos Copilot+." },
+    "en": { "title": "Turn off Recall (snapshots)", "desc": "User policy that stops saving screen snapshots on Copilot+ PCs." } },
+
+  { "id": "privacy.activity-history", "category": "privacy", "risk": 2,
+    "settings": [
+      { "hive": "HKLM", "key": "@policies/System", "name": "PublishUserActivities", "on": 0, "off": null },
+      { "hive": "HKLM", "key": "@policies/System", "name": "UploadUserActivities", "on": 0, "off": null } ],
+    "es": { "title": "Desactivar el historial de actividad", "desc": "Directiva oficial: Windows no guarda ni sube la lista de lo que haces en el equipo. Pide permiso de administrador." },
+    "en": { "title": "Turn off activity history", "desc": "Official policy: Windows doesn't store or upload what you do on the PC. Needs administrator permission." } },
+
+  { "id": "privacy.diagnostic-required", "category": "privacy", "risk": 3,
+    "settings": [ { "hive": "HKLM", "key": "@policies/DataCollection", "name": "AllowTelemetry", "on": 1, "off": null } ],
+    "es": { "title": "Limitar diagnósticos a los obligatorios", "desc": "Directiva oficial que fija el nivel de datos de diagnóstico en «Obligatorios». No elimina toda la telemetría de Windows.", "warn": "Configuración mostrará «administrado por la organización». Algunas funciones de Insider y comentarios dejan de estar disponibles." },
+    "en": { "title": "Limit diagnostics to required data", "desc": "Official policy that sets diagnostic data to \"Required\". It doesn't remove all Windows telemetry.", "warn": "Settings will show \"managed by your organization\". Some Insider and feedback features stop working." } },
+
+  { "id": "privacy.diagtrack-service", "category": "privacy", "risk": 3, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "@services/DiagTrack", "name": "Start", "on": 4, "off": 2, "requireKey": true } ],
+    "es": { "title": "Desactivar el servicio de telemetría (DiagTrack)", "desc": "Deshabilita «Experiencias del usuario y telemetría asociadas». Se aplica tras reiniciar.", "warn": "Servicio no esencial, pero algunas funciones de diagnóstico, comentarios e Insider dejan de funcionar. No elimina toda la telemetría." },
+    "en": { "title": "Disable the telemetry service (DiagTrack)", "desc": "Disables \"Connected User Experiences and Telemetry\". Takes effect after a restart.", "warn": "Non-essential service, but some diagnostics, feedback and Insider features stop working. It doesn't remove all telemetry." } },
+
+  // ---------------- Permisos de aplicaciones ----------------
+  { "id": "permissions.location", "category": "permissions", "risk": 2,
+    "settings": [ { "key": "@consent/location", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear la ubicación para las aplicaciones", "desc": "Ninguna aplicación de tu cuenta puede acceder a la ubicación.", "warn": "Mapas, el tiempo local o «Buscar mi dispositivo» dejarán de conocer tu posición." },
+    "en": { "title": "Block location for apps", "desc": "No app in your account can access your location.", "warn": "Maps, local weather or Find my device will no longer know your position." } },
+
+  { "id": "permissions.webcam", "category": "permissions", "risk": 2,
+    "settings": [ { "key": "@consent/webcam", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear la cámara para las aplicaciones", "desc": "Ninguna aplicación puede usar la cámara.", "warn": "Las videollamadas y Windows Hello facial pueden dejar de funcionar." },
+    "en": { "title": "Block the camera for apps", "desc": "No app can use the camera.", "warn": "Video calls and Windows Hello face may stop working." } },
+
+  { "id": "permissions.microphone", "category": "permissions", "risk": 2,
+    "settings": [ { "key": "@consent/microphone", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear el micrófono para las aplicaciones", "desc": "Ninguna aplicación puede usar el micrófono.", "warn": "Las llamadas, el dictado y los juegos con chat de voz dejarán de oírte." },
+    "en": { "title": "Block the microphone for apps", "desc": "No app can use the microphone.", "warn": "Calls, dictation and voice chat in games will stop hearing you." } },
+
+  { "id": "permissions.contacts", "category": "permissions", "risk": 1,
+    "settings": [ { "key": "@consent/contacts", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear el acceso a los contactos", "desc": "Las aplicaciones no pueden leer tus contactos." },
+    "en": { "title": "Block access to contacts", "desc": "Apps can't read your contacts." } },
+
+  { "id": "permissions.calendar", "category": "permissions", "risk": 1,
+    "settings": [ { "key": "@consent/appointments", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear el acceso al calendario", "desc": "Las aplicaciones no pueden leer tus citas." },
+    "en": { "title": "Block access to the calendar", "desc": "Apps can't read your appointments." } },
+
+  { "id": "permissions.account-info", "category": "permissions", "risk": 1,
+    "settings": [ { "key": "@consent/userAccountInformation", "name": "Value", "type": "string", "on": "Deny", "off": "Allow" } ],
+    "es": { "title": "Bloquear la información de la cuenta", "desc": "Las aplicaciones no pueden ver tu nombre ni tu foto de cuenta." },
+    "en": { "title": "Block account information", "desc": "Apps can't see your account name or picture." } },
+
+  // ---------------- Búsqueda ----------------
+  { "id": "search.no-web", "category": "search", "risk": 2, "restart": "explorer",
+    "settings": [ { "key": "@policies/Explorer", "name": "DisableSearchBoxSuggestions", "on": 1, "off": null } ],
+    "es": { "title": "Sin resultados web (Bing) en la búsqueda", "desc": "Directiva de usuario: la búsqueda de Inicio solo muestra resultados del equipo." },
+    "en": { "title": "No web (Bing) results in search", "desc": "User policy: Start search only shows results from this PC." } },
+
+  { "id": "search.no-highlights", "category": "search", "risk": 1,
+    "settings": [ { "key": "@searchsettings", "name": "IsDynamicSearchBoxEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Sin «Destacados de búsqueda»", "desc": "Quita las ilustraciones y temas del día del cuadro de búsqueda." },
+    "en": { "title": "No search highlights", "desc": "Removes daily illustrations and topics from search." } },
+
+  { "id": "search.no-cloud", "category": "search", "risk": 1,
+    "settings": [
+      { "key": "@searchsettings", "name": "IsMSACloudSearchEnabled", "on": 0, "off": 1 },
+      { "key": "@searchsettings", "name": "IsAADCloudSearchEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "No buscar en tus cuentas en la nube", "desc": "La búsqueda no incluye contenido de OneDrive, Outlook u otras cuentas." },
+    "en": { "title": "Don't search your cloud accounts", "desc": "Search doesn't include OneDrive, Outlook or other account content." } },
+
+  { "id": "search.no-history", "category": "search", "risk": 1,
+    "settings": [ { "key": "@searchsettings", "name": "IsDeviceSearchHistoryEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "No guardar el historial de búsqueda", "desc": "Windows no guarda en el equipo lo que buscas." },
+    "en": { "title": "Don't keep search history", "desc": "Windows doesn't store what you search on this PC." } },
+
+  { "id": "search.no-bing-win10", "category": "search", "risk": 1, "maxBuild": 21999,
+    "settings": [ { "key": "@search", "name": "BingSearchEnabled", "on": 0, "off": null } ],
+    "es": { "title": "Sin búsqueda web de Bing (Windows 10)", "desc": "La búsqueda de la barra de tareas no consulta Bing." },
+    "en": { "title": "No Bing web search (Windows 10)", "desc": "Taskbar search doesn't query Bing." } },
+
+  // ---------------- Aplicaciones ----------------
+  { "id": "apps.no-game-dvr", "category": "apps", "risk": 2,
+    "settings": [
+      { "key": "System/GameConfigStore", "name": "GameDVR_Enabled", "on": 0, "off": 1 },
+      { "key": "Software/Microsoft/Windows/CurrentVersion/GameDVR", "name": "AppCaptureEnabled", "on": 0, "off": null } ],
+    "es": { "title": "Desactivar la grabación en segundo plano de juegos", "desc": "Game DVR deja de grabar en segundo plano; libera recursos al jugar.", "warn": "Win+Alt+G y «Grabar lo que ha pasado» dejarán de funcionar." },
+    "en": { "title": "Turn off background game recording", "desc": "Game DVR stops recording in the background; frees resources while gaming.", "warn": "Win+Alt+G and \"Record what happened\" will stop working." } },
+
+  { "id": "apps.no-background", "category": "apps", "risk": 3,
+    "settings": [ { "hive": "HKLM", "key": "@policies/AppPrivacy", "name": "LetAppsRunInBackground", "on": 2, "off": null } ],
+    "es": { "title": "Impedir que las aplicaciones de la Tienda funcionen en segundo plano", "desc": "Directiva oficial que aplica a todas las aplicaciones de la Microsoft Store. Pide permiso de administrador.", "warn": "Correo, Calendario, alarmas, notificaciones y sincronización de algunas aplicaciones pueden dejar de actualizarse." },
+    "en": { "title": "Stop Store apps running in the background", "desc": "Official policy that applies to every Microsoft Store app. Needs administrator permission.", "warn": "Mail, Calendar, alarms, notifications and sync in some apps may stop updating." } },
+
+  // ---------------- Sistema (avanzado) ----------------
+  { "id": "system.no-fast-startup", "category": "system", "risk": 2, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "SYSTEM/CurrentControlSet/Control/Session Manager/Power", "name": "HiberbootEnabled", "on": 0, "off": 1 } ],
+    "es": { "title": "Desactivar el inicio rápido", "desc": "Apagar cierra Windows por completo. Útil con arranque dual o problemas de controladores.", "warn": "El encendido puede tardar unos segundos más." },
+    "en": { "title": "Turn off fast startup", "desc": "Shutting down fully closes Windows. Useful with dual boot or driver issues.", "warn": "Startup may take a few seconds longer." } },
+
+  { "id": "system.long-paths", "category": "system", "risk": 2,
+    "settings": [ { "hive": "HKLM", "key": "SYSTEM/CurrentControlSet/Control/FileSystem", "name": "LongPathsEnabled", "on": 1, "off": 0 } ],
+    "es": { "title": "Permitir rutas largas (más de 260 caracteres)", "desc": "Las aplicaciones compatibles pueden usar rutas muy largas (útil en programación)." },
+    "en": { "title": "Allow long paths (over 260 characters)", "desc": "Compatible apps can use very long paths (useful for development)." } },
+
+  { "id": "system.verbose-status", "category": "system", "risk": 1,
+    "settings": [ { "hive": "HKLM", "key": "Software/Microsoft/Windows/CurrentVersion/Policies/System", "name": "VerboseStatus", "on": 1, "off": null } ],
+    "es": { "title": "Mensajes detallados al iniciar y apagar", "desc": "Muestra qué está haciendo Windows en lugar de solo «Espera»." },
+    "en": { "title": "Verbose startup and shutdown messages", "desc": "Shows what Windows is doing instead of just \"Please wait\"." } },
+
+  { "id": "system.no-remote-assistance", "category": "system", "risk": 2,
+    "settings": [ { "hive": "HKLM", "key": "SYSTEM/CurrentControlSet/Control/Remote Assistance", "name": "fAllowToGetHelp", "on": 0, "off": 1 } ],
+    "es": { "title": "Desactivar Asistencia remota", "desc": "Nadie puede pedir conectarse a tu equipo con Asistencia remota de Windows (no afecta a Asistencia rápida)." },
+    "en": { "title": "Turn off Remote Assistance", "desc": "No one can request a Windows Remote Assistance connection (Quick Assist isn't affected)." } },
+
+  { "id": "system.delivery-optimization", "category": "system", "risk": 2,
+    "settings": [ { "hive": "HKLM", "key": "@policies/DeliveryOptimization", "name": "DODownloadMode", "on": 0, "off": null } ],
+    "es": { "title": "No compartir actualizaciones con otros equipos", "desc": "Optimización de distribución descarga solo de Microsoft, sin subir datos a otros PC. Las actualizaciones siguen funcionando." },
+    "en": { "title": "Don't share updates with other PCs", "desc": "Delivery Optimization downloads only from Microsoft and uploads nothing. Updates keep working." } },
+
+  { "id": "system.mouse-acceleration", "category": "system", "risk": 2, "restart": "signOut",
+    "settings": [
+      { "key": "Control Panel/Mouse", "name": "MouseSpeed", "type": "string", "on": "0", "off": "1" },
+      { "key": "Control Panel/Mouse", "name": "MouseThreshold1", "type": "string", "on": "0", "off": "6" },
+      { "key": "Control Panel/Mouse", "name": "MouseThreshold2", "type": "string", "on": "0", "off": "10" } ],
+    "es": { "title": "Desactivar la aceleración del ratón", "desc": "Equivale a desmarcar «Mejorar la precisión del puntero». Movimiento 1:1, preferido para juegos." },
+    "en": { "title": "Turn off mouse acceleration", "desc": "Same as unticking \"Enhance pointer precision\". 1:1 movement, preferred for games." } },
+
+  { "id": "system.sticky-keys-prompt", "category": "system", "risk": 1,
+    "settings": [ { "key": "Control Panel/Accessibility/StickyKeys", "name": "Flags", "type": "string", "on": "506", "off": "510" } ],
+    "es": { "title": "Sin aviso de Teclas especiales al pulsar Mayús 5 veces", "desc": "Evita el aviso de accesibilidad al jugar." },
+    "en": { "title": "No Sticky Keys prompt after pressing Shift 5 times", "desc": "Avoids the accessibility prompt while gaming." } },
+
+  { "id": "system.numlock", "category": "system", "risk": 1, "restart": "signOut",
+    "settings": [ { "key": "Control Panel/Keyboard", "name": "InitialKeyboardIndicators", "type": "string", "on": "2", "off": "0" } ],
+    "es": { "title": "Bloq Num activado al iniciar sesión", "desc": "El teclado numérico empieza activado." },
+    "en": { "title": "Num Lock on at sign-in", "desc": "The numeric keypad starts on." } },
+
+  { "id": "system.service-maps", "category": "system", "risk": 3, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "@services/MapsBroker", "name": "Start", "on": 4, "off": 2, "requireKey": true } ],
+    "es": { "title": "Deshabilitar el servicio de mapas descargados", "desc": "Desactiva «Administrador de mapas descargados» (MapsBroker).", "warn": "Los mapas sin conexión dejarán de actualizarse." },
+    "en": { "title": "Disable the downloaded maps service", "desc": "Disables \"Downloaded Maps Manager\" (MapsBroker).", "warn": "Offline maps will stop updating." } },
+
+  { "id": "system.service-fax", "category": "system", "risk": 3, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "@services/Fax", "name": "Start", "on": 4, "off": 3, "requireKey": true } ],
+    "es": { "title": "Deshabilitar el servicio de Fax", "desc": "Desactiva el servicio de envío y recepción de faxes.", "warn": "No podrás usar Fax y Escáner de Windows para enviar faxes." },
+    "en": { "title": "Disable the Fax service", "desc": "Disables the fax send and receive service.", "warn": "You won't be able to send faxes from Windows Fax and Scan." } },
+
+  { "id": "system.service-retaildemo", "category": "system", "risk": 3, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "@services/RetailDemo", "name": "Start", "on": 4, "off": 3, "requireKey": true } ],
+    "es": { "title": "Deshabilitar el servicio de demostración comercial", "desc": "Solo se usa en equipos de exposición en tiendas.", "warn": "El modo de demostración comercial dejará de funcionar." },
+    "en": { "title": "Disable the retail demo service", "desc": "Only used on store display PCs.", "warn": "Retail demo mode will stop working." } },
+
+  // ---------------- Informativos: sin cambios automáticos ----------------
+  { "id": "info.optional-features", "category": "system", "risk": 3, "kind": "info", "open": "ms-settings:optionalfeatures",
+    "es": { "title": "Componentes opcionales de Windows", "desc": "Añadir o quitar componentes del sistema puede requerir descargas y reinicios, y no siempre se puede deshacer limpiamente. Se gestiona desde la herramienta oficial." },
+    "en": { "title": "Optional Windows features", "desc": "Adding or removing system components may need downloads and restarts and can't always be undone cleanly. Managed from the official tool." } },
+
+  { "id": "info.services", "category": "system", "risk": 3, "kind": "info", "open": "services.msc",
+    "es": { "title": "Otros servicios", "desc": "Windows Reborn solo ofrece servicios no esenciales con reversión fiable. Para el resto usa la consola oficial de Servicios." },
+    "en": { "title": "Other services", "desc": "Windows Reborn only offers non-essential services with reliable rollback. Use the official Services console for the rest." } },
+
+  { "id": "info.security", "category": "privacy", "risk": 3, "kind": "info", "open": "windowsdefender:",
+    "es": { "title": "Seguridad de Windows, actualizaciones y firewall", "desc": "Windows Reborn no desactiva Defender, SmartScreen, UAC, Windows Update ni el firewall. Revisa su configuración en la aplicación oficial." },
+    "en": { "title": "Windows Security, updates and firewall", "desc": "Windows Reborn doesn't turn off Defender, SmartScreen, UAC, Windows Update or the firewall. Review them in the official app." } }
+]

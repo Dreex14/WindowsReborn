@@ -1,0 +1,167 @@
+﻿<Application x:Class="WindowsReborn.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:infra="clr-namespace:WindowsReborn.App.Infrastructure"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+            </ResourceDictionary.MergedDictionaries>
+
+            <infra:BoolToVisibilityConverter x:Key="BoolToVis" />
+            <infra:BoolToVisibilityConverter x:Key="InvBoolToVis" Invert="True" />
+            <infra:NullToVisibilityConverter x:Key="NullToVis" />
+            <infra:NullToVisibilityConverter x:Key="InvNullToVis" Invert="True" />
+            <infra:InverseBoolConverter x:Key="InvBool" />
+            <infra:EnumEqualsConverter x:Key="EnumEquals" />
+            <infra:BytesConverter x:Key="Bytes" />
+
+            <!-- Tipografía -->
+            <Style x:Key="PageTitle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="Margin" Value="0,0,0,4" />
+            </Style>
+            <Style x:Key="PageSubtitle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Margin" Value="0,0,0,20" />
+            </Style>
+            <Style x:Key="SectionTitle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+            </Style>
+            <Style x:Key="Body" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+            <Style x:Key="Caption" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+            <Style x:Key="CaptionTrim" TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+
+            <!-- Botones con dimensiones coherentes -->
+            <Style x:Key="ActionButton" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                <Setter Property="MinWidth" Value="120" />
+                <Setter Property="Height" Value="34" />
+                <Setter Property="Padding" Value="14,0" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="PrimaryButton" TargetType="ui:Button" BasedOn="{StaticResource ActionButton}">
+                <Setter Property="Appearance" Value="Primary" />
+            </Style>
+            <Style x:Key="SmallButton" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                <Setter Property="MinWidth" Value="88" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Padding" Value="10,0" />
+                <Setter Property="Margin" Value="6,0,0,0" />
+            </Style>
+            <Style x:Key="IconButton" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                <Setter Property="Width" Value="34" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="6,0,0,0" />
+                <Setter Property="Appearance" Value="Transparent" />
+            </Style>
+
+            <!-- Tarjeta de sección -->
+            <Style x:Key="Section" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="20,16" />
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Style>
+            <Style x:Key="Row" TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Padding" Value="14,10" />
+                <Setter Property="Margin" Value="0,0,0,6" />
+            </Style>
+            <Style x:Key="Badge" TargetType="Border">
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Padding" Value="8,2" />
+                <Setter Property="Margin" Value="0,0,6,0" />
+                <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <!-- Etiqueta de riesgo: verde (seguro), ámbar (moderado), rojo (avanzado) -->
+            <Style x:Key="RiskBadge" TargetType="Border" BasedOn="{StaticResource Badge}">
+                <Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Risk}" Value="Moderate">
+                        <Setter Property="Background" Value="{DynamicResource SystemFillColorCautionBackgroundBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCautionBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Risk}" Value="Advanced">
+                        <Setter Property="Background" Value="{DynamicResource SystemFillColorCriticalBackgroundBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Elemento de navegación lateral -->
+            <Style x:Key="NavItem" TargetType="RadioButton">
+                <Setter Property="GroupName" Value="Nav" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="Margin" Value="6,2" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="Bd" CornerRadius="5" Background="Transparent" Padding="12,0">
+                                <Grid>
+                                    <Rectangle x:Name="Indicator" Width="3" Height="16" RadiusX="1.5" RadiusY="1.5"
+                                               HorizontalAlignment="Left" Margin="-12,0,0,0"
+                                               Fill="{DynamicResource AccentFillColorDefaultBrush}" Visibility="Collapsed" />
+                                    <ContentPresenter VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                                    <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource FocusStrokeColorOuterBrush}" />
+                                    <Setter TargetName="Bd" Property="BorderThickness" Value="1" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PageScroll" TargetType="ScrollViewer">
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="Padding" Value="32,8,32,24" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

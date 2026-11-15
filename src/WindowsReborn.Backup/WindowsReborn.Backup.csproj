@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsReborn.Storage\WindowsReborn.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WindowsReborn.Tests" />
+  </ItemGroup>
+
+</Project>

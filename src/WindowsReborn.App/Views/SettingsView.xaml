@@ -1,0 +1,89 @@
+<UserControl x:Class="WindowsReborn.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:l="clr-namespace:WindowsReborn.App.Infrastructure">
+    <ScrollViewer Style="{StaticResource PageScroll}">
+        <StackPanel MaxWidth="1040">
+            <TextBlock Style="{StaticResource PageTitle}" Text="{l:Tr settings.title}" />
+            <TextBlock Style="{StaticResource PageSubtitle}" Text="{l:Tr settings.subtitle}" />
+            <ui:InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="{Binding Message}"
+                        Visibility="{Binding Message, Converter={StaticResource NullToVis}}" Margin="0,0,0,12" />
+
+            <Border Style="{StaticResource Section}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource Body}" Text="{l:Tr settings.language}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}" HorizontalAlignment="Left" MinWidth="260" Margin="0,4" />
+                    <TextBlock Grid.Row="1" Style="{StaticResource Body}" Text="{l:Tr settings.theme}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Themes}" SelectedItem="{Binding Theme}" HorizontalAlignment="Left" MinWidth="260" Margin="0,4" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Section}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr settings.tools}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource Body}" Text="7-Zip" VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Margin="0,4">
+                            <TextBlock Style="{StaticResource Body}" Text="{Binding SevenZipStatus}" />
+                            <TextBlock Style="{StaticResource Caption}" Text="{l:Tr settings.7z-help}" />
+                        </StackPanel>
+                        <ui:Button Grid.Column="2" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Content="{l:Tr common.browse}" Icon="{ui:SymbolIcon FolderOpen24}" Command="{Binding BrowseSevenZipCommand}" />
+                        <TextBlock Grid.Row="1" Style="{StaticResource Body}" Text="{l:Tr settings.installers}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource CaptionTrim}" Text="{Binding InstallersFolder}" VerticalAlignment="Center" ToolTip="{Binding InstallersFolder}" />
+                        <ui:Button Grid.Row="1" Grid.Column="2" Style="{StaticResource ActionButton}" Margin="8,8,0,0" Content="{l:Tr common.browse}" Icon="{ui:SymbolIcon FolderOpen24}" Command="{Binding BrowseInstallersCommand}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Section}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr settings.privacy}" />
+                    <CheckBox IsChecked="{Binding Anonymize}" Content="{l:Tr backup.anonymize}" Margin="0,2" />
+                    <CheckBox IsChecked="{Binding AllowUpdateCheck}" Content="{l:Tr settings.allow-update}" Margin="0,2" />
+                    <TextBlock Style="{StaticResource Caption}" Text="{l:Tr settings.update-help}" Margin="28,0,0,8" />
+                    <ui:Button Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Content="{l:Tr settings.check-updates}" Icon="{ui:SymbolIcon ArrowSync24}" Command="{Binding CheckUpdatesCommand}" />
+                    <TextBlock Style="{StaticResource Caption}" Text="{l:Tr settings.no-telemetry}" Margin="0,12,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Section}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr settings.config}" />
+                    <TextBlock Style="{StaticResource Caption}" Text="{l:Tr settings.config-help}" Margin="0,0,0,10" />
+                    <WrapPanel>
+                        <ui:Button Style="{StaticResource ActionButton}" Margin="0,0,8,8" Content="{l:Tr settings.export-config}" Icon="{ui:SymbolIcon ArrowExportLtr24}" Command="{Binding ExportConfigCommand}" />
+                        <ui:Button Style="{StaticResource ActionButton}" Margin="0,0,8,8" Content="{l:Tr settings.import-config}" Icon="{ui:SymbolIcon ArrowImport24}" Command="{Binding ImportConfigCommand}" />
+                        <ui:Button Style="{StaticResource ActionButton}" Margin="0,0,8,8" Content="{l:Tr settings.open-data}" Icon="{ui:SymbolIcon FolderOpen24}" Command="{Binding OpenDataFolderCommand}" />
+                        <ui:Button Style="{StaticResource ActionButton}" Margin="0,0,8,8" Content="{l:Tr settings.open-logs}" Icon="{ui:SymbolIcon DocumentBulletList24}" Command="{Binding OpenLogsCommand}" />
+                    </WrapPanel>
+                    <TextBlock Style="{StaticResource CaptionTrim}" Text="{Binding DataFolder}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Section}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr settings.about}" />
+                    <TextBlock Style="{StaticResource Body}" Text="{l:Tr settings.about-text}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
