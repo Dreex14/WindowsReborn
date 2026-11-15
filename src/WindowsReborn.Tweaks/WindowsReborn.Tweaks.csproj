@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsReborn.Programs\WindowsReborn.Programs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="catalog.json" LogicalName="WindowsReborn.Tweaks.catalog.json" />
+    <EmbeddedResource Include="appx.json" LogicalName="WindowsReborn.Tweaks.appx.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WindowsReborn.Tests" />
+  </ItemGroup>
+
+</Project>

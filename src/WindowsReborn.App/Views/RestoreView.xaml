@@ -1,0 +1,171 @@
+<UserControl x:Class="WindowsReborn.App.Views.RestoreView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:l="clr-namespace:WindowsReborn.App.Infrastructure"
+             AllowDrop="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Style="{StaticResource PageScroll}">
+            <StackPanel>
+                <TextBlock Text="{l:Tr restore.title}" Style="{StaticResource PageTitle}" />
+                <TextBlock Text="{l:Tr restore.subtitle}" Style="{StaticResource PageSubtitle}" />
+
+                <!-- Zona para importar -->
+                <Border CornerRadius="16" BorderThickness="2" Padding="28,26" Margin="0,0,0,16"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                    <Border.BorderBrush>
+                        <DrawingBrush Viewport="0,0,12,12" ViewportUnits="Absolute" TileMode="Tile">
+                            <DrawingBrush.Drawing>
+                                <DrawingGroup>
+                                    <GeometryDrawing Brush="#667C5CFF"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,6,6" /></GeometryDrawing.Geometry></GeometryDrawing>
+                                    <GeometryDrawing Brush="#667C5CFF"><GeometryDrawing.Geometry><RectangleGeometry Rect="6,6,6,6" /></GeometryDrawing.Geometry></GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Border.BorderBrush>
+                    <StackPanel HorizontalAlignment="Center">
+                        <Border Width="56" Height="56" CornerRadius="16" Background="{StaticResource AccentGradient}" HorizontalAlignment="Center">
+                            <ui:SymbolIcon Symbol="ArrowImport24" Foreground="White" FontSize="28" />
+                        </Border>
+                        <TextBlock Text="{l:Tr restore.drop}" Style="{StaticResource SectionTitle}" HorizontalAlignment="Center" Margin="0,12,0,4" />
+                        <TextBlock Text="{l:Tr restore.drop.hint}" Style="{StaticResource Caption}" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="560" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
+                            <Button Style="{StaticResource GradientButton}" Command="{Binding PickZipsCommand}" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Symbol="DocumentArrowUp20" Foreground="White" Margin="0,0,8,0" /><TextBlock Text="{l:Tr restore.pick}" /></StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SoftButton}" Command="{Binding PickFolderCommand}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Symbol="FolderOpen20" Margin="0,0,8,0" /><TextBlock Text="{l:Tr restore.pick-folder}" /></StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="{Binding Error}" Foreground="{StaticResource AdvancedBrush}" TextWrapping="Wrap" Margin="0,0,0,12"
+                           Visibility="{Binding Error, Converter={StaticResource NullToVis}}" />
+
+                <!-- Configuración encontrada junto al backup -->
+                <Border Style="{StaticResource Hero}" Visibility="{Binding HasFoundConfig, Converter={StaticResource BoolToVis}}" Padding="22,18">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource WhiteButton}" Command="{Binding LoadFoundConfigCommand}" VerticalAlignment="Center">
+                            <TextBlock Text="{l:Tr restore.config-found.load}" />
+                        </Button>
+                        <ui:SymbolIcon Symbol="BoxMultiple24" Foreground="White" FontSize="26" Margin="0,0,14,0" />
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                            <TextBlock Text="{l:Tr restore.config-found}" Style="{StaticResource OnHeroText}" FontWeight="SemiBold" FontSize="15" />
+                            <TextBlock Text="{l:Tr restore.config-found.hint}" Style="{StaticResource OnHeroText}" FontSize="12" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Resultado -->
+                <Border Style="{StaticResource Card}" Visibility="{Binding HasResult, Converter={StaticResource BoolToVis}}">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Left" Style="{StaticResource IconBubble}" VerticalAlignment="Top">
+                            <Grid>
+                                <ui:SymbolIcon Symbol="CheckmarkCircle24" Foreground="{StaticResource SafeBrush}" FontSize="22"
+                                               Visibility="{Binding ResultOk, Converter={StaticResource BoolToVis}}" />
+                                <ui:SymbolIcon Symbol="Warning24" Foreground="{StaticResource ModerateBrush}" FontSize="22"
+                                               Visibility="{Binding ResultOk, Converter={StaticResource InvBoolToVis}}" />
+                            </Grid>
+                        </Border>
+                        <StackPanel Margin="14,0,0,0">
+                            <TextBlock Text="{Binding ResultTitle}" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="{Binding ResultText}" Style="{StaticResource Caption}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Contenido de los backups -->
+                <StackPanel Visibility="{Binding HasEntries, Converter={StaticResource BoolToVis}}">
+                    <DockPanel Margin="0,4,0,10">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Command="{Binding ClearCommand}">
+                            <StackPanel Orientation="Horizontal"><ui:SymbolIcon Symbol="Dismiss20" Margin="0,0,6,0" /><TextBlock Text="{l:Tr restore.clear}" /></StackPanel>
+                        </Button>
+                        <TextBlock Text="{l:Tr restore.content}" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
+                    </DockPanel>
+
+                    <ItemsControl ItemsSource="{Binding Entries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Style="{StaticResource SelectCard}" Margin="0,0,0,8" IsChecked="{Binding IsSelected}" IsEnabled="{Binding HasTarget}"
+                                          AutomationProperties.Name="{Binding Name}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource IconBubble}">
+                                            <ui:SymbolIcon Symbol="{Binding Icon}" FontSize="20" Foreground="{StaticResource AccentStrong}" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                <ui:SymbolIcon Symbol="ArrowRight12" FontSize="12" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                <TextBlock Text="{Binding TargetDisplay}" Style="{StaticResource CaptionTrim}" />
+                                            </StackPanel>
+                                            <TextBlock Style="{StaticResource Caption}">
+                                                <Run Text="{Binding SizeText, Mode=OneWay}" /> · <Run Text="{Binding ZipName, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <Button Grid.Column="2" Style="{StaticResource GhostButton}" Command="{Binding ChangeTargetCommand}" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal"><ui:SymbolIcon Symbol="FolderSwap20" Margin="0,0,6,0" /><TextBlock Text="{l:Tr common.change}" /></StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Style="{StaticResource Card}" Margin="0,8,0,0">
+                        <StackPanel>
+                            <TextBlock Text="{l:Tr restore.policy}" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+                            <WrapPanel>
+                                <RadioButton Style="{StaticResource PillTab}" GroupName="Policy" Content="{l:Tr restore.policy.overwrite}"
+                                             IsChecked="{Binding PolicyIndex, Converter={x:Static l:IndexEquals.Instance}, ConverterParameter=0}" />
+                                <RadioButton Style="{StaticResource PillTab}" GroupName="Policy" Content="{l:Tr restore.policy.rename}"
+                                             IsChecked="{Binding PolicyIndex, Converter={x:Static l:IndexEquals.Instance}, ConverterParameter=1}" />
+                                <RadioButton Style="{StaticResource PillTab}" GroupName="Policy" Content="{l:Tr restore.policy.skip}"
+                                             IsChecked="{Binding PolicyIndex, Converter={x:Static l:IndexEquals.Instance}, ConverterParameter=2}" />
+                            </WrapPanel>
+                            <TextBlock Text="{l:Tr restore.policy.hint}" Style="{StaticResource Caption}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                BorderThickness="0,1,0,0" Padding="36,14" Visibility="{Binding HasEntries, Converter={StaticResource BoolToVis}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" Margin="0,0,24,0">
+                    <TextBlock Text="{l:Tr restore.ready}" Style="{StaticResource Body}" FontWeight="SemiBold"
+                               Visibility="{Binding IsRunning, Converter={StaticResource InvBoolToVis}}" />
+                    <StackPanel Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}">
+                        <ProgressBar Style="{StaticResource SlimProgress}" Value="{Binding Percent}" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding CurrentFile}" Style="{StaticResource CaptionTrim}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource SoftButton}" Command="{Binding CancelCommand}" Margin="0,0,10,0" Content="{l:Tr common.cancel}"
+                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}" />
+                    <Button Style="{StaticResource GradientButton}" Command="{Binding StartCommand}" IsEnabled="{Binding IsRunning, Converter={StaticResource InvBool}}">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="ArrowReset20" Foreground="White" Margin="0,0,8,0" />
+                            <TextBlock Text="{l:Tr restore.start}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
