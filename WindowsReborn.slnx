@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WindowsReborn.App/WindowsReborn.App.csproj" />
+    <Project Path="src/WindowsReborn.Backup/WindowsReborn.Backup.csproj" />
+    <Project Path="src/WindowsReborn.Core/WindowsReborn.Core.csproj" />
+    <Project Path="src/WindowsReborn.Programs/WindowsReborn.Programs.csproj" />
+    <Project Path="src/WindowsReborn.Restore/WindowsReborn.Restore.csproj" />
+    <Project Path="src/WindowsReborn.Storage/WindowsReborn.Storage.csproj" />
+    <Project Path="src/WindowsReborn.Tweaks/WindowsReborn.Tweaks.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WindowsReborn.Tests/WindowsReborn.Tests.csproj" />
+  </Folder>
+</Solution>

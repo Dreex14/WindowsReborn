@@ -1,0 +1,19 @@
+﻿<Project>
+  <!-- ConfiguraciÃ³n comÃºn a todos los proyectos de Windows Reborn. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Version>1.0.2</Version>
+    <Authors>Dreex</Authors>
+    <Company>Dreex</Company>
+    <Product>Windows Reborn</Product>
+    <Copyright>Copyright (c) 2026 Dreex</Copyright>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+</Project>
