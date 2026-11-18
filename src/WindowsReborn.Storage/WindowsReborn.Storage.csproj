@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsReborn.Core\WindowsReborn.Core.csproj" />
+  </ItemGroup>
+
+</Project>
