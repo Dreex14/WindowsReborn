@@ -45,6 +45,7 @@ public partial class ConfigViewModel : ObservableObject
         foreach (var (k, v) in ViewModelLocator.Privacy.Snapshot().Concat(ViewModelLocator.Optimize.Snapshot())) tweaks[k] = v;
         var config = MyConfig.FromSettings(s, tweaks, programs, items, AppServices.Version);
         config.AppPermissions = Tweaks.AppPermissions.Capture();
+        config.RemoveApps = DebloatViewModel.SavedList();
         return config;
     }
 
@@ -123,6 +124,11 @@ public partial class ConfigViewModel : ObservableObject
                     ViewModelLocator.Optimize.Refresh();
                     await ApplyQuietAsync(privacy, optimize);
                 }
+            }
+            if (_imported.RemoveApps.Count > 0)
+            {
+                MainWindow.Current?.Navigate("debloat");
+                await ViewModelLocator.Debloat.RemoveListedAsync(_imported.RemoveApps);
             }
             if (_imported.Programs.Count + _imported.GitHubRepos.Count > 0)
             {

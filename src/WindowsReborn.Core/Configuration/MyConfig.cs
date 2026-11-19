@@ -17,7 +17,8 @@ public sealed class MyConfig
     public const string PartOptimize = "optimize";
     public const string PartPrograms = "programs";
     public const string PartBackup = "backup";
-    public static IReadOnlyList<string> AllParts { get; } = [PartPrivacy, PartOptimize, PartPrograms, PartBackup];
+    public const string PartDebloat = "debloat";
+    public static IReadOnlyList<string> AllParts { get; } = [PartPrivacy, PartOptimize, PartPrograms, PartBackup, PartDebloat];
 
     public int SchemaVersion { get; set; } = CurrentSchema;
 
@@ -33,6 +34,8 @@ public sealed class MyConfig
     /// <summary>Permisos de cada app (permiso → app → Allow/Deny), parte de Privacidad.</summary>
     public Dictionary<string, Dictionary<string, string>> AppPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public List<string> Programs { get; set; } = [];
+    /// <summary>Programas preinstalados que se quitan (parte de Optimizar).</summary>
+    public List<string> RemoveApps { get; set; } = [];
     public string? GitHubUser { get; set; }
     public List<string> GitHubRepos { get; set; } = [];
     public List<string> ExtraRepos { get; set; } = [];
@@ -46,6 +49,7 @@ public sealed class MyConfig
         Parts = [.. AllParts],
         Tweaks = new Dictionary<string, string>(tweaks, StringComparer.OrdinalIgnoreCase),
         Programs = programs.ToList(),
+        RemoveApps = [.. s.RemovedApps.Union(s.DebloatSelection ?? [], StringComparer.OrdinalIgnoreCase)],
         GitHubUser = s.GitHubUser,
         GitHubRepos = [.. s.SelectedRepos],
         ExtraRepos = [.. s.ExtraRepos],
@@ -63,6 +67,8 @@ public sealed class MyConfig
             s.SelectedRepos = [.. GitHubRepos];
             s.ExtraRepos = [.. ExtraRepos];
         }
+        if ((Has(PartDebloat) || Has(PartOptimize)) && RemoveApps.Count > 0)
+            s.DebloatSelection = [.. RemoveApps];
         if (Has(PartBackup))
         {
             s.BackupItems = [.. BackupItems];

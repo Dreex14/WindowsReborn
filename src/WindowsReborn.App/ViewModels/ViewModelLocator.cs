@@ -9,5 +9,6 @@ public static class ViewModelLocator
     public static ProgramsViewModel Programs { get; } = new();
     public static TweaksViewModel Privacy { get; } = new(TweaksPage.Privacy);
     public static TweaksViewModel Optimize { get; } = new(TweaksPage.Optimize);
+    public static DebloatViewModel Debloat { get; } = new();
     public static ConfigViewModel Config { get; } = new();
 }

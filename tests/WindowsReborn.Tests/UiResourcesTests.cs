@@ -1,10 +1,10 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace WindowsReborn.Tests;
 
 /// <summary>
-/// Comprobaciones estáticas de la interfaz: iconos y textos que solo fallarían al
+/// Comprobaciones estÃ¡ticas de la interfaz: iconos y textos que solo fallarÃ­an al
 /// abrir la pantalla correspondiente.
 /// </summary>
 public partial class UiResourcesTests
@@ -49,7 +49,7 @@ public partial class UiResourcesTests
         var en = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(Path.Combine(core, "en.json")))!;
         var keys = SourceFiles().SelectMany(f => KeyPattern().Matches(File.ReadAllText(f)))
             .Select(m => m.Groups.Cast<Group>().Skip(1).First(g => g.Success).Value)
-            .Where(k => !k.EndsWith('.')) // prefijos de claves dinámicas: los cubre Dynamic_translation_keys_exist
+            .Where(k => !k.EndsWith('.')) // prefijos de claves dinÃ¡micas: los cubre Dynamic_translation_keys_exist
             .Distinct().ToList();
         Assert.True(keys.Count > 150, $"only {keys.Count} keys found");
         var missing = keys.Where(k => !es.ContainsKey(k) || !en.ContainsKey(k)).ToList();
@@ -63,7 +63,7 @@ public partial class UiResourcesTests
         var en = Core.Localization.Loc.LoadEmbedded("en");
         var keys = new List<string>();
         keys.AddRange(Enum.GetNames<Tweaks.TweakCategory>().Select(c => "tweakcat." + c.ToLowerInvariant()));
-        keys.AddRange(new[] { "startup", "appx", "all" }.Select(c => "tweakcat." + c));
+        keys.AddRange(new[] { "startup", "all" }.Select(c => "tweakcat." + c));
         keys.AddRange(Enum.GetValues<Tweaks.RiskLevel>().Select(r => $"risk.{(int)r}"));
         keys.AddRange(Enum.GetNames<Tweaks.RestartNeed>().Where(r => r != "None").SelectMany(r => new[] { "restart." + r.ToLowerInvariant(), "restart.pending." + r.ToLowerInvariant() }));
         keys.AddRange(Enum.GetNames<Tweaks.StartupLocation>().Select(l => "startup.loc." + l.ToLowerInvariant()));

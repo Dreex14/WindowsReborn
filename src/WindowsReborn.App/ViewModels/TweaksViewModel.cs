@@ -118,22 +118,10 @@ public partial class StartupRow(StartupEntry entry, TweaksViewModel owner) : Obs
     }
 }
 
-public partial class AppxRow(InstalledAppx app) : ObservableObject
-{
-    public InstalledAppx App { get; } = app;
-    public string Title => App.Candidate.Title(Loc.Instance.Language);
-    public RiskLevel Risk => (RiskLevel)App.Candidate.Risk;
-    public string RiskLabel => Loc.T($"risk.{App.Candidate.Risk}");
-    public string? Warning => App.Candidate.Warning(Loc.Instance.Language);
-    [ObservableProperty] private bool _isRemoved;
-    [ObservableProperty] private bool _isBusy;
-}
-
 public partial class TweaksViewModel : ObservableObject
 {
     public const string AllKey = "all";
     public const string StartupKey = "startup";
-    public const string AppxKey = "appx";
 
     private readonly ICollectionView _view;
 
@@ -156,7 +144,6 @@ public partial class TweaksViewModel : ObservableObject
         if (page == TweaksPage.Optimize)
         {
             Tabs.Add(new FilterTab(StartupKey, Loc.T("tweakcat.startup")));
-            Tabs.Add(new FilterTab(AppxKey, Loc.T("tweakcat.appx")));
         }
         _selectedTab = Tabs[0];
 
@@ -179,9 +166,8 @@ public partial class TweaksViewModel : ObservableObject
     public ICollectionView View => _view;
     public ObservableCollection<FilterTab> Tabs { get; } = [];
     public ObservableCollection<StartupRow> StartupRows { get; } = [];
-    public ObservableCollection<AppxRow> AppxRows { get; } = [];
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(IsTweakList), nameof(IsStartupList), nameof(IsAppxList))]
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(IsTweakList), nameof(IsStartupList))]
     private FilterTab _selectedTab;
     [ObservableProperty] private string _search = "";
     [ObservableProperty] private bool _showSafe = true;
@@ -189,21 +175,18 @@ public partial class TweaksViewModel : ObservableObject
     [ObservableProperty] private bool _showAdvanced = true;
     [ObservableProperty] private int _changedCount;
     [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private bool _appxLoading;
     [ObservableProperty] private bool _createRestorePoint;
     [ObservableProperty] private string? _statusText;
     [ObservableProperty] private bool _explorerRestartNeeded;
 
-    public bool IsTweakList => SelectedTab.Key is not (StartupKey or AppxKey);
+    public bool IsTweakList => SelectedTab.Key is not StartupKey;
     public bool IsStartupList => SelectedTab.Key == StartupKey;
-    public bool IsAppxList => SelectedTab.Key == AppxKey;
     public int PresetSupportedCount => Rows.Count(r => r.InPreset);
 
     partial void OnSelectedTabChanged(FilterTab value)
     {
         _view.Refresh();
         if (value.Key == StartupKey) LoadStartup();
-        if (value.Key == AppxKey && AppxRows.Count == 0) _ = LoadAppxAsync();
     }
 
     partial void OnSearchChanged(string value) => _view.Refresh();
@@ -569,43 +552,4 @@ public partial class TweaksViewModel : ObservableObject
             StatusText = Loc.T("tweaks.error", ex.Message);
         }
     }
-
-    // ---- Apps preinstaladas ----
-
-    [RelayCommand]
-    private async Task LoadAppxAsync()
-    {
-        AppxLoading = true;
-        try
-        {
-            var list = await AppServices.Appx.ListInstalledAsync();
-            AppxRows.Clear();
-            foreach (var a in list) AppxRows.Add(new AppxRow(a));
-        }
-        finally
-        {
-            AppxLoading = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task RemoveAppxAsync(AppxRow row)
-    {
-        var body = Loc.T("appx.confirm", row.Title) + (row.Warning is null ? "" : "\n\n" + row.Warning);
-        if (!await Dialogs.ConfirmAsync(Loc.T("appx.remove"), body, Loc.T("appx.remove"), row.Risk == RiskLevel.Advanced))
-            return;
-        row.IsBusy = true;
-        try
-        {
-            row.IsRemoved = await AppServices.Appx.RemoveAsync(row.App);
-            StatusText = Loc.T(row.IsRemoved ? "appx.removed" : "appx.failed", row.Title);
-        }
-        finally
-        {
-            row.IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private void ReinstallAppx(AppxRow row) => Dialogs.OpenUri(AppxManager.StoreSearchUri(row.App.Candidate));
 }

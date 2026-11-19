@@ -75,6 +75,12 @@
                             <TextBlock Text="{l:Tr nav.privacy}" VerticalAlignment="Center" />
                         </StackPanel>
                     </RadioButton>
+                    <RadioButton x:Name="NavDebloat" Style="{StaticResource NavItem}" Tag="debloat" Checked="OnNavChecked">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Delete24" Margin="0,0,14,0" />
+                            <TextBlock Text="{l:Tr nav.debloat}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </RadioButton>
                     <RadioButton x:Name="NavOptimize" Style="{StaticResource NavItem}" Tag="optimize" Checked="OnNavChecked">
                         <StackPanel Orientation="Horizontal">
                             <ui:SymbolIcon Symbol="Rocket24" Margin="0,0,14,0" />

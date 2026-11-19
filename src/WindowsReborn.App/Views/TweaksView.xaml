@@ -261,43 +261,6 @@
                     </ItemsControl>
                 </StackPanel>
 
-                <!-- Apps preinstaladas -->
-                <StackPanel Visibility="{Binding IsAppxList, Converter={StaticResource BoolToVis}}" Margin="0,8,0,0">
-                    <TextBlock Text="{l:Tr appx.hint}" Style="{StaticResource Caption}" Margin="0,0,0,12" />
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12" Visibility="{Binding AppxLoading, Converter={StaticResource BoolToVis}}">
-                        <ui:ProgressRing IsIndeterminate="True" Width="16" Height="16" />
-                        <TextBlock Text="{l:Tr appx.loading}" Style="{StaticResource Caption}" Margin="8,0,0,0" />
-                    </StackPanel>
-                    <ItemsControl ItemsSource="{Binding AppxRows}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Style="{StaticResource Card}" Padding="18,12" Margin="0,0,0,8">
-                                    <DockPanel>
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Style="{StaticResource SoftButton}" Content="{l:Tr appx.remove}"
-                                                    Command="{Binding DataContext.RemoveAppxCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}" Visibility="{Binding IsRemoved, Converter={StaticResource InvBoolToVis}}"
-                                                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvBool}}" />
-                                            <Button Style="{StaticResource GhostButton}" Content="{l:Tr appx.reinstall}"
-                                                    Command="{Binding DataContext.ReinstallAppxCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}" Visibility="{Binding IsRemoved, Converter={StaticResource BoolToVis}}" />
-                                        </StackPanel>
-                                        <StackPanel Margin="0,0,16,0">
-                                            <WrapPanel>
-                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Margin="0,0,10,0" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                                                <Border Style="{StaticResource RiskChip}">
-                                                    <TextBlock Text="{Binding RiskLabel}" Style="{StaticResource RiskChipText}" />
-                                                </Border>
-                                            </WrapPanel>
-                                            <TextBlock Text="{Binding Warning}" Style="{StaticResource Caption}" Foreground="{StaticResource ModerateBrush}" Margin="0,4,0,0"
-                                                       Visibility="{Binding Warning, Converter={StaticResource NullToVis}}" />
-                                        </StackPanel>
-                                    </DockPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
 

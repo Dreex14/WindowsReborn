@@ -40,6 +40,12 @@ public sealed class AppSettings
     /// <summary>Programas del catálogo marcados.</summary>
     public List<string>? SelectedPrograms { get; set; }
 
+    /// <summary>Programas preinstalados marcados para quitar (null = los recomendados).</summary>
+    public List<string>? DebloatSelection { get; set; }
+
+    /// <summary>Programas preinstalados que el usuario ha quitado (se vuelven a quitar tras formatear).</summary>
+    public List<string> RemovedApps { get; set; } = [];
+
     /// <summary>Programas nuevos ya ofrecidos (para marcar una sola vez los que vienen marcados).</summary>
     public List<string> SeenNewPrograms { get; set; } = [];
 

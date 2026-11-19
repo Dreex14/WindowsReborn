@@ -50,6 +50,7 @@ public partial class MainWindow : FluentWindow
             "programs" => NavPrograms,
             "privacy" => NavPrivacy,
             "optimize" => NavOptimize,
+            "debloat" => NavDebloat,
             "config" => NavConfig,
             _ => NavHome,
         };
@@ -77,6 +78,7 @@ public partial class MainWindow : FluentWindow
                 "programs" => new ProgramsView(),
                 "privacy" => new TweaksView(ViewModelLocator.Privacy),
                 "optimize" => new TweaksView(ViewModelLocator.Optimize),
+                "debloat" => new DebloatView(),
                 "config" => new ConfigView(),
                 _ => new HomeView(),
             };

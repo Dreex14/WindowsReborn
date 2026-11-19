@@ -26,6 +26,7 @@ public partial class HomeViewModel : ObservableObject
         new(2, Loc.T("home.after.2"), Loc.T("home.after.2.text"), "AppsAddIn24", "programs"),
         new(3, Loc.T("home.after.3"), Loc.T("home.after.3.text"), "ShieldLock24", "privacy"),
         new(4, Loc.T("home.after.4"), Loc.T("home.after.4.text"), "Rocket24", "optimize"),
+        new(5, Loc.T("home.after.5"), Loc.T("home.after.5.text"), "Delete24", "debloat"),
     ];
 
     public string? LastBackup => AppServices.Settings.LastBackupPath is { } p && Directory.Exists(p)

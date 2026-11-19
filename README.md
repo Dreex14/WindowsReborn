@@ -41,6 +41,10 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 - **Permisos**: cámara, micrófono, ubicación, contactos, calendario, documentos, imágenes… con tres
   estados que corresponden a los dos interruptores de Configuración (*Permitido*, *Bloqueado para las
   apps* y *Bloqueado en todo el equipo*). También se guardan los permisos de cada app.
+- **Desinstalar programas**: quita de golpe la basura que trae Windows (Candy Crush y otras apps
+  patrocinadas, Noticias, Teams personal, Copilot, Clipchamp, programas del fabricante…). Las
+  recomendadas vienen marcadas y puede evitar que vuelvan a instalarse. Lista revisada con la de
+  [Win11Debloat](https://github.com/Raphire/Win11Debloat); nunca toca la Store, WinGet ni los códecs.
 - **Optimizar**: menú contextual clásico de Windows 10, ver extensiones, «Finalizar tarea»,
   modo de juego, rendimiento, apps de inicio y apps preinstaladas.
 - Cada ajuste lleva **etiqueta de riesgo** (Seguro · Moderado · Avanzado), se guarda su valor

@@ -273,6 +273,38 @@ public class TweaksTests
     }
 
     [Fact]
+    public void Debloat_list_is_safe_and_complete()
+    {
+        var all = AppxManager.Candidates;
+        Assert.True(all.Count > 100, $"only {all.Count}");
+        Assert.Equal(all.Count, all.Select(c => c.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        // Nada esencial: Tienda, WinGet, códecs, marcos, seguridad ni idioma.
+        string[] forbidden = ["WindowsStore", "DesktopAppInstaller", "Winget", "SecHealthUI", "VCLibs", "UI.Xaml", "NET.Native", "WindowsAppRuntime",
+            "WinAppRuntime", "VideoExtension", "ImageExtension", "WebMediaExtensions", "LanguageExperiencePack", "StorePurchaseApp", "ShellExperienceHost", "RealtekAudio"];
+        foreach (var c in all)
+        {
+            Assert.DoesNotContain(forbidden, f => c.Name.Contains(f, StringComparison.OrdinalIgnoreCase));
+            Assert.False(string.IsNullOrWhiteSpace(c.Es) || string.IsNullOrWhiteSpace(c.En), c.Name);
+            Assert.Contains(c.Group, new[] { "microsoft", "third", "oem" });
+            if (c.Risk == 3) Assert.False(string.IsNullOrWhiteSpace(c.WarnEs), $"{c.Name} needs a warning");
+            if (c.Recommended) Assert.Equal(1, c.Risk);
+            if (c.IsWinGet) Assert.DoesNotContain('*', c.Name);
+        }
+        // Lo útil nunca viene marcado.
+        foreach (var keep in new[] { "Microsoft.Windows.Photos", "Microsoft.WindowsCalculator", "Microsoft.ScreenSketch", "Microsoft.OneDrive", "SpotifyAB.SpotifyMusic", "Microsoft.Edge" })
+            Assert.False(AppxManager.Find(keep)!.Recommended, keep);
+        // Patrones para los paquetes que llevan un prefijo distinto en cada equipo.
+        var march = AppxManager.Find("*MarchofEmpires*")!;
+        Assert.True(AppxManager.Matches(march, "A278AB0D.MarchofEmpires"));
+        Assert.False(AppxManager.Matches(AppxManager.Find("Microsoft.Paint")!, "Microsoft.PaintStudio"));
+        var script = AppxManager.ProvisionedScript(["Microsoft.BingNews", "Microsoft.WindowsStore", "Microsoft.OneDrive", "bad'; rm"]);
+        Assert.Contains("'Microsoft.BingNews'", script);
+        Assert.DoesNotContain("WindowsStore", script);
+        Assert.DoesNotContain("OneDrive", script); // va por WinGet, no es un paquete aprovisionado
+        Assert.DoesNotContain("rm", script);
+    }
+
+    [Fact]
     public void Appx_list_only_accepts_known_packages()
     {
         var json = """[{"Name":"Microsoft.BingWeather","PackageFullName":"Microsoft.BingWeather_4.53.0.0_x64__8wekyb3d8bbwe","Version":"4.53.0.0"},{"Name":"Microsoft.WindowsStore","PackageFullName":"Microsoft.WindowsStore_1.0_x64__8wekyb3d8bbwe","Version":"1"},{"Name":"Microsoft.BingNews","PackageFullName":"bad name; rm","Version":"1"}]""";

@@ -30,6 +30,7 @@ Windows Reborn (licencia MIT, Copyright (c) 2026 Dreex) usa los siguientes compo
 | Proyecto | Licencia |
 |---|---|
 | Optimizer (hellzerg) | GPL-3.0 |
+| Win11Debloat (Raphire) | MIT |
 | Chris Titus Tech WinUtil | MIT |
 | FluentTweaker (builtbybel) | Sin licencia declarada (no se reutiliza) |
 | O&O ShutUp10++ | Freeware propietario |
