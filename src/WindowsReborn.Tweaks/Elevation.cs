@@ -61,7 +61,7 @@ public sealed class SystemRegistryWriter(string stateDirectory) : IRegistryWrite
     }
 
     public static bool NeedsElevation(RegOp op) =>
-        op.Hive == RegHive.LocalMachine || op.Key.StartsWith(@"Software\Policies\", StringComparison.OrdinalIgnoreCase);
+        AdminKeys.Requires(op.Hive, op.Key);
 
     private async Task<ElevatedResponse> RunElevatedAsync(ElevatedRequest request, CancellationToken ct)
     {

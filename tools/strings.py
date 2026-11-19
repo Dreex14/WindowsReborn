@@ -316,6 +316,10 @@ S = {
     "tweaks.copy.title": ("Copia de tus ajustes de Windows", "Copy of your Windows settings"),
     "tweaks.copy.text": ("Guarda en un .zip cómo tienes ahora esta sección ({0} ajustes activados) para dejar Windows igual tras el próximo formateo.",
                          "Save how this section is set right now ({0} settings on) to a .zip so Windows ends up the same after your next reinstall."),
+    "tweaks.confirm.app-permissions": ("También se restaurarán los permisos de {0} apps (cámara, micrófono, ubicación…).", "The permissions of {0} apps (camera, microphone, location…) will also be restored."),
+    "tweaks.app-permissions-applied": ("Permisos de apps restaurados: {0}.", "App permissions restored: {0}."),
+    "tweaks.copy.apps": ("Incluye los permisos de cada app: qué apps pueden usar la cámara, el micrófono, la ubicación, tus carpetas…",
+                         "Includes each app's permissions: which apps can use the camera, microphone, location, your folders…"),
     "tweaks.copy.export": ("Exportar", "Export"),
     "tweaks.copy.import": ("Importar", "Import"),
 

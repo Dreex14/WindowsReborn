@@ -17,7 +17,8 @@ public static class TweakPresets
         "privacy.no-recall", "privacy.activity-history", "privacy.diagnostic-required", "privacy.diagtrack-service",
         "privacy.consumer-features", "privacy.ceip", "privacy.appcompat-telemetry", "privacy.handwriting-reports",
         "privacy.cloud-clipboard", "privacy.cortana", "privacy.explorer-ads", "privacy.office-telemetry",
-        "privacy.nvidia-telemetry", "privacy.edge-telemetry", "permissions.app-diagnostics",
+        "privacy.nvidia-telemetry", "privacy.edge-telemetry", "privacy.firefox-telemetry", "privacy.vs-telemetry",
+        
         "search.no-web", "search.no-highlights", "search.no-cloud", "search.no-history", "search.no-bing-win10",
         "start.no-recommendations", "start.no-account-notifications", "start.no-suggestions-win10",
     ];
@@ -29,6 +30,7 @@ public static class TweakPresets
         "taskbar.end-task", "taskbar.hide-chat", "taskbar.hide-copilot",
         "performance.game-mode", "performance.startup-delay", "performance.edge-background",
         "appearance.menu-delay", "system.sticky-keys-prompt", "system.long-paths",
+        "explorer.no-cast", "explorer.no-store-open-with", "system.registry-backup", "system.small-dumps", "system.smb1",
     ];
 
     /// <summary>Opción «activado» para los conmutadores del preset (los de elección se ignoran).</summary>

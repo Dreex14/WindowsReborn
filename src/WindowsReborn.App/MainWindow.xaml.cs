@@ -21,6 +21,12 @@ public partial class MainWindow : FluentWindow
         Current = this;
         RestoreWindowPlacement();
         Closing += (_, _) => SaveWindowPlacement();
+        // Al volver de Configuración de Windows, las secciones de ajustes muestran el estado real.
+        Activated += (_, _) =>
+        {
+            ViewModelLocator.Privacy.RefreshFromWindows();
+            ViewModelLocator.Optimize.RefreshFromWindows();
+        };
         VersionText.Text = "v" + AppServices.Version + " · Dreex";
         NavHome.IsChecked = true;
     }

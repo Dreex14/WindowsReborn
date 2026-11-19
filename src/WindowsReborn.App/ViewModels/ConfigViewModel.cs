@@ -43,7 +43,9 @@ public partial class ConfigViewModel : ObservableObject
         // Lo aplicado más lo marcado (aunque aún no se haya aplicado) en Privacidad y Optimizar.
         var tweaks = new Dictionary<string, string>(AppServices.TweakPreferences.Selections, StringComparer.OrdinalIgnoreCase);
         foreach (var (k, v) in ViewModelLocator.Privacy.Snapshot().Concat(ViewModelLocator.Optimize.Snapshot())) tweaks[k] = v;
-        return MyConfig.FromSettings(s, tweaks, programs, items, AppServices.Version);
+        var config = MyConfig.FromSettings(s, tweaks, programs, items, AppServices.Version);
+        config.AppPermissions = Tweaks.AppPermissions.Capture();
+        return config;
     }
 
     [RelayCommand]
@@ -84,6 +86,8 @@ public partial class ConfigViewModel : ObservableObject
             await AppServices.SaveSettingsAsync();
             await AppServices.SaveTweakPreferencesAsync();
             AppServices.RaiseConfigurationReplaced();
+            if (config.Has(MyConfig.PartPrivacy))
+                ViewModelLocator.Privacy.SetPendingPermissions(config.AppPermissions);
             _imported = config;
             ImportedTweaks = config.Tweaks.Count;
             ImportedPrograms = config.Programs.Count + config.GitHubRepos.Count;
@@ -107,7 +111,7 @@ public partial class ConfigViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            if (_imported.Tweaks.Count > 0)
+            if (_imported.Tweaks.Count > 0 || ViewModelLocator.Privacy.PendingPermissionApps > 0)
             {
                 var message = Loc.T("config.apply.confirm", _imported.Tweaks.Count);
                 if (await Dialogs.ConfirmAsync(Loc.T("config.apply"), message, Loc.T("tweaks.apply")))

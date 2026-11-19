@@ -37,6 +37,9 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 - **Privacidad** (lo más importante): un botón aplica una configuración recomendada de
   ~35 ajustes (telemetría, ID de publicidad, Copilot, Recall, Bing en la búsqueda, apps
   patrocinadas, telemetría de Office/NVIDIA/Edge…).
+- **Permisos**: cámara, micrófono, ubicación, contactos, calendario, documentos, imágenes… con tres
+  estados que corresponden a los dos interruptores de Configuración (*Permitido*, *Bloqueado para las
+  apps* y *Bloqueado en todo el equipo*). También se guardan los permisos de cada app.
 - **Optimizar**: menú contextual clásico de Windows 10, ver extensiones, «Finalizar tarea»,
   modo de juego, rendimiento, apps de inicio y apps preinstaladas.
 - Cada ajuste lleva **etiqueta de riesgo** (Seguro · Moderado · Avanzado), se guarda su valor

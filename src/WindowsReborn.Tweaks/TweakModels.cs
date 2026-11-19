@@ -55,6 +55,15 @@ public enum RegKind
     Binary,
 }
 
+/// <summary>Claves que solo se pueden escribir con permisos de administrador (también las de directivas del usuario).</summary>
+public static class AdminKeys
+{
+    public static bool Requires(RegHive hive, string key) =>
+        hive == RegHive.LocalMachine ||
+        key.StartsWith(@"Software\Policies\", StringComparison.OrdinalIgnoreCase) ||
+        key.StartsWith(@"Software\Microsoft\Windows\CurrentVersion\Policies\", StringComparison.OrdinalIgnoreCase);
+}
+
 /// <summary>Valor leído del registro. <see cref="Data"/> va normalizado como texto (DWORD en decimal sin signo, binario en hexadecimal).</summary>
 public sealed record RegValue(RegKind Kind, string Data);
 
@@ -69,6 +78,8 @@ public sealed class RegSetting
     public required IReadOnlyDictionary<string, string?> Values { get; init; }
     /// <summary>La clave debe existir de antemano (p. ej. un servicio); si no, el ajuste no es compatible.</summary>
     public bool RequireKey { get; init; }
+    /// <summary>Valor que Windows usa cuando no está escrito (p. ej. «Allow» en los permisos).</summary>
+    public string? Default { get; init; }
 }
 
 public sealed record BuildRange(int Min, int Max)
@@ -99,7 +110,7 @@ public sealed class TweakDefinition
     public IReadOnlyList<string> Tags { get; init; } = [];
     public required IReadOnlyDictionary<string, TweakText> Texts { get; init; }
 
-    public bool RequiresAdmin => Settings.Any(s => s.Hive == RegHive.LocalMachine || s.Key.StartsWith(@"Software\Policies\", StringComparison.OrdinalIgnoreCase));
+    public bool RequiresAdmin => Settings.Any(s => AdminKeys.Requires(s.Hive, s.Key));
 
     public TweakText Text(string language) =>
         Texts.TryGetValue(language, out var t) ? t : Texts.TryGetValue("en", out var en) ? en : Texts.Values.First();

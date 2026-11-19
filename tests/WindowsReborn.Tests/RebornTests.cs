@@ -25,7 +25,7 @@ public class RebornTests
     [Fact]
     public void Privacy_preset_keeps_camera_microphone_and_location_working()
     {
-        Assert.DoesNotContain(TweakPresets.Privacy, id => id.StartsWith("permissions.", StringComparison.Ordinal) && id != "permissions.app-diagnostics");
+        Assert.DoesNotContain(TweakPresets.Privacy, id => id.StartsWith("permissions.", StringComparison.Ordinal));
         Assert.DoesNotContain(TweakPresets.Privacy, id => TweakCatalog.Find(id)!.Risk == RiskLevel.Advanced && !id.StartsWith("privacy.diag", StringComparison.Ordinal));
     }
 
@@ -183,6 +183,34 @@ public class RebornTests
     }
 
     [Fact]
+    public void App_permission_paths_hide_the_user_folder()
+    {
+        var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace('\\', '#');
+        var exe = profile + "#AppData#Local#Discord#app-1.0#Discord.exe";
+        var portable = AppPermissions.ToPortable(exe);
+        Assert.StartsWith("%USERPROFILE%#AppData", portable);
+        Assert.Equal(exe, AppPermissions.FromPortable(portable));
+        Assert.Equal("C:#Program Files#OBS#obs64.exe", AppPermissions.ToPortable("C:#Program Files#OBS#obs64.exe"));
+        Assert.Contains("webcam", AppPermissions.Capabilities);
+        Assert.Contains("microphone", AppPermissions.Capabilities);
+        Assert.Equal(2, AppPermissions.CountApps(new Dictionary<string, Dictionary<string, string>>
+        {
+            ["webcam"] = new() { ["App.A"] = "Allow", ["App.B"] = "Deny" },
+            ["microphone"] = new() { ["App.A"] = "Allow" },
+        }));
+    }
+
+    [Fact]
+    public void Permission_keys_exist_in_windows()
+    {
+        // Cada ajuste de permisos apunta a un permiso real de ConsentStore (evita erratas como «appDiagnostic»).
+        string[] known = [.. AppPermissions.Capabilities, "appointments"];
+        foreach (var t in TweakCatalog.All.Where(t => t.Category == TweakCategory.Permissions))
+            foreach (var s in t.Settings)
+                Assert.Contains(s.Key.Split('\\').Last(), known);
+    }
+
+    [Fact]
     public void Firefox_profiles_are_found()
     {
         using var tmp = new TempDir();
@@ -208,6 +236,8 @@ public class RebornTests
         Assert.True(SystemRegistryWriter.NeedsElevation(new RegOp(RegOpType.SetValue, RegHive.CurrentUser, @"Software\Policies\Microsoft\Windows\WindowsCopilot", "X")));
         Assert.False(SystemRegistryWriter.NeedsElevation(new RegOp(RegOpType.SetValue, RegHive.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "X")));
         Assert.True(TweakCatalog.Find("privacy.office-telemetry")!.RequiresAdmin);
+        Assert.True(TweakCatalog.Find("explorer.no-store-open-with")!.RequiresAdmin);
+        Assert.True(TweakCatalog.Find("permissions.webcam")!.RequiresAdmin);
     }
 
     [Fact]

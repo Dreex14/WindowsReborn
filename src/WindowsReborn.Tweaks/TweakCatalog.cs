@@ -58,6 +58,7 @@ public static class TweakCatalog
             Name = s.Name ?? "",
             Kind = s.Type,
             RequireKey = s.RequireKey,
+            Default = s.Default,
             Values = kind == TweakKind.Choice
                 ? (s.Values ?? []).ToDictionary(kv => kv.Key, kv => Str(kv.Value))
                 : new Dictionary<string, string?> { [TweakDefinition.On] = Str(s.On), [TweakDefinition.Off] = Str(s.Off) },
@@ -169,6 +170,7 @@ public static class TweakCatalog
         public JsonElement? Off { get; set; }
         public Dictionary<string, JsonElement?>? Values { get; set; }
         public bool RequireKey { get; set; }
+        public string? Default { get; set; }
     }
 
     private sealed class TextDto

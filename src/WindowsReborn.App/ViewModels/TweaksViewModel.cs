@@ -254,6 +254,7 @@ public partial class TweaksViewModel : ObservableObject
     private async Task SaveConfigAsync()
     {
         var config = new Core.Configuration.MyConfig { Parts = [Part], Tweaks = Snapshot() };
+        if (IsPrivacy) config.AppPermissions = AppPermissions.Capture();
         StatusText = await ConfigFiles.SaveAsync(config, IsPrivacy ? "section.file.privacy" : "section.file.optimize") ?? StatusText;
     }
 
@@ -272,9 +273,26 @@ public partial class TweaksViewModel : ObservableObject
             else row.SelectedChoice = row.Choices.FirstOrDefault(c => c.Id == option) ?? row.SelectedChoice;
             marked++;
         }
+        if (IsPrivacy) SetPendingPermissions(config.AppPermissions);
         SelectedTab = Tabs[0];
         OnRowChanged();
-        StatusText = marked == 0 ? Loc.T("section.empty") : Loc.T("section.loaded.tweaks", marked);
+        StatusText = marked == 0 && PendingPermissionApps == 0 ? Loc.T("section.empty") : Loc.T("section.loaded.tweaks", marked);
+    }
+
+    /// <summary>
+    /// Vuelve a leer Windows (por ejemplo, tras cambiar algo en Configuración) sin perder lo
+    /// que el usuario tiene marcado y pendiente de aplicar.
+    /// </summary>
+    public void RefreshFromWindows()
+    {
+        if (!_refreshed || IsBusy) return;
+        foreach (var row in Rows.Where(r => !r.IsBusy))
+        {
+            var status = AppServices.Tweaks.Evaluate(row.Def);
+            if (row.IsChanged) row.CurrentOption = status.CurrentOption;
+            else row.Sync(status);
+        }
+        OnRowChanged();
     }
 
     /// <summary>Lee el estado real de Windows. Los ajustes no compatibles se ocultan.</summary>
@@ -303,9 +321,32 @@ public partial class TweaksViewModel : ObservableObject
         OnPropertyChanged(nameof(PresetText));
     }
 
+    private Dictionary<string, Dictionary<string, string>>? _pendingPermissions;
+
+    /// <summary>Apps cuyos permisos se restaurarán al pulsar «Aplicar cambios».</summary>
+    [ObservableProperty] private int _pendingPermissionApps;
+
+    /// <summary>Permisos de cada app cargados de un archivo (se escriben al aplicar).</summary>
+    public void SetPendingPermissions(Dictionary<string, Dictionary<string, string>>? permissions)
+    {
+        _pendingPermissions = permissions is { Count: > 0 } ? permissions : null;
+        PendingPermissionApps = AppPermissions.CountApps(_pendingPermissions);
+        OnRowChanged();
+    }
+
+    /// <summary>Escribe los permisos pendientes (no necesitan permisos de administrador).</summary>
+    private int ApplyPendingPermissions()
+    {
+        if (_pendingPermissions is null) return 0;
+        var n = AppPermissions.Apply(_pendingPermissions);
+        _pendingPermissions = null;
+        PendingPermissionApps = 0;
+        return n;
+    }
+
     public void OnRowChanged()
     {
-        ChangedCount = Rows.Count(r => r.IsChanged);
+        ChangedCount = Rows.Count(r => r.IsChanged) + (PendingPermissionApps > 0 ? 1 : 0);
         ActiveCount = Rows.Count(r => r.IsToggle && r.CurrentOption == TweakDefinition.On);
     }
 
@@ -345,15 +386,17 @@ public partial class TweaksViewModel : ObservableObject
     public async Task ApplyAsync()
     {
         var rows = Rows.Where(r => r.IsChanged).ToList();
-        if (rows.Count == 0 || IsBusy) return;
+        if (rows.Count == 0 && PendingPermissionApps == 0 || IsBusy) return;
 
         var message = Loc.T("tweaks.confirm.body", rows.Count);
+        if (PendingPermissionApps > 0)
+            message += "\n\n" + Loc.T("tweaks.confirm.app-permissions", PendingPermissionApps);
         var advanced = rows.Where(r => r.Risk == RiskLevel.Advanced).ToList();
         if (advanced.Count > 0)
             message += "\n\n" + Loc.T("tweaks.confirm.advanced") + "\n" + string.Join("\n", advanced.Select(r => $"• {r.Title}: {r.Warning}"));
-        if (rows.Any(r => r.NeedsAdmin) || CreateRestorePoint)
+        if (rows.Any(r => r.NeedsAdmin) || CreateRestorePoint && rows.Count > 0)
             message += "\n\n" + Loc.T("tweaks.confirm.admin");
-        if (CreateRestorePoint)
+        if (CreateRestorePoint && rows.Count > 0)
             message += "\n" + Loc.T("tweaks.confirm.restore-point");
         if (!await Dialogs.ConfirmAsync(Loc.T("tweaks.confirm.title"), message, Loc.T("tweaks.apply"), advanced.Count > 0))
             return;
@@ -365,8 +408,14 @@ public partial class TweaksViewModel : ObservableObject
     {
         IsBusy = true;
         StatusText = Loc.T("tweaks.applying");
+        var permissions = ApplyPendingPermissions();
         try
         {
+            if (rows.Count == 0)
+            {
+                StatusText = Loc.T("tweaks.app-permissions-applied", permissions);
+                return;
+            }
             var changes = rows.Select(r => (r.Def, r.Desired!)).ToList();
             IReadOnlyList<TweakResult> results;
             try
@@ -396,6 +445,7 @@ public partial class TweaksViewModel : ObservableObject
                 .Select(r => r.Def.Restart).DefaultIfEmpty(RestartNeed.None).Max();
             ExplorerRestartNeeded = restart == RestartNeed.Explorer;
             StatusText = Loc.T(failed == 0 ? "tweaks.applied" : "tweaks.applied-errors", applied, failed) +
+                         (permissions > 0 ? " " + Loc.T("tweaks.app-permissions-applied", permissions) : "") +
                          (restart is RestartNeed.SignOut or RestartNeed.Reboot ? " " + Loc.T("restart.pending." + restart.ToString().ToLowerInvariant()) : "");
         }
         catch (ElevationCancelledException)
@@ -427,7 +477,7 @@ public partial class TweaksViewModel : ObservableObject
             else row.SelectedChoice = row.Choices.FirstOrDefault(c => c.Id == option);
             if (row.IsChanged) rows.Add(row);
         }
-        if (rows.Count > 0) await ApplyRowsAsync(rows, CreateRestorePoint);
+        if (rows.Count > 0 || PendingPermissionApps > 0) await ApplyRowsAsync(rows, CreateRestorePoint);
         return rows.Count;
     }
 

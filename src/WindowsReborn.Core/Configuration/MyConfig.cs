@@ -30,6 +30,8 @@ public sealed class MyConfig
 
     /// <summary>Id del ajuste → opción (lo que se aplica de nuevo).</summary>
     public Dictionary<string, string> Tweaks { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    /// <summary>Permisos de cada app (permiso → app → Allow/Deny), parte de Privacidad.</summary>
+    public Dictionary<string, Dictionary<string, string>> AppPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public List<string> Programs { get; set; } = [];
     public string? GitHubUser { get; set; }
     public List<string> GitHubRepos { get; set; } = [];

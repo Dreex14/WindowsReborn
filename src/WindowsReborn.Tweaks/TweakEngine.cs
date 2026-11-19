@@ -39,6 +39,7 @@ public sealed class TweakEngine(IRegistryReader registry, IRegistryWriter writer
         if (!s.Values.TryGetValue(option, out var expected))
             return true; // la opción no controla este valor
         var actual = registry.Read(s.Hive, s.Key, s.Name);
+        if (actual is null && s.Default is not null) return expected is not null && Same(s.Kind, s.Default, expected);
         if (expected is null) return actual is null;
         // Sin valor = lo que trae Windows, que en un conmutador es «desactivado».
         if (actual is null && option == TweakDefinition.Off) return true;

@@ -43,8 +43,11 @@ public class TweaksTests
                 continue;
             }
             Assert.NotEmpty(t.Settings);
-            foreach (var s in t.Settings)
-                Assert.All(t.Options, o => Assert.True(s.Values.ContainsKey(o), $"{t.Id} {s.Name} lacks {o}"));
+            // Cada opción controla al menos un valor (un valor puede no importar en alguna opción).
+            Assert.All(t.Options, o => Assert.True(t.Settings.Any(s => s.Values.ContainsKey(o)), $"{t.Id} option {o} controls nothing"));
+            if (t.Kind == TweakKind.Toggle)
+                foreach (var s in t.Settings)
+                    Assert.All(t.Options, o => Assert.True(s.Values.ContainsKey(o), $"{t.Id} {s.Name} lacks {o}"));
         }
     }
 
@@ -55,6 +58,24 @@ public class TweaksTests
         foreach (var t in TweakCatalog.All)
             foreach (var s in t.Settings)
                 Assert.DoesNotContain(forbidden, f => (s.Key + "\\" + s.Name).Contains(f, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task Permission_has_three_states_matching_both_windows_switches()
+    {
+        var (engine, reg) = NewEngine();
+        var t = Get("permissions.contacts");
+        // Sin valores escritos, Windows lo trata como permitido.
+        Assert.Equal("allow", engine.Evaluate(t).CurrentOption);
+
+        Assert.Equal(TweakOutcome.Applied, (await engine.ApplyAsync(t, "apps", false)).Outcome);
+        Assert.Equal("Deny", reg.Read(RegHive.CurrentUser, t.Settings[1].Key, "Value")!.Data);
+        Assert.Equal("Allow", reg.Read(RegHive.LocalMachine, t.Settings[0].Key, "Value")!.Data);
+
+        // «Acceso a contactos» apagado en Configuración: bloqueado en todo el equipo, sea cual sea el interruptor de usuario.
+        Assert.Equal(TweakOutcome.Applied, (await engine.ApplyAsync(t, "all", false)).Outcome);
+        Assert.Equal("all", engine.Evaluate(t).CurrentOption);
+        Assert.Equal("Deny", reg.Read(RegHive.LocalMachine, t.Settings[0].Key, "Value")!.Data);
     }
 
     [Fact]
