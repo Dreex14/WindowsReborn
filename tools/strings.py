@@ -171,6 +171,7 @@ S = {
     "programs.cat.browsers": ("Navegadores", "Browsers"),
     "programs.cat.gaming": ("Juegos", "Gaming"),
     "programs.cat.communication": ("Comunicación", "Communication"),
+    "programs.cat.ai": ("Inteligencia artificial", "Artificial intelligence"),
     "programs.cat.media": ("Multimedia y creación", "Media and creation"),
     "programs.cat.development": ("Programación", "Development"),
     "programs.cat.utilities": ("Utilidades", "Utilities"),

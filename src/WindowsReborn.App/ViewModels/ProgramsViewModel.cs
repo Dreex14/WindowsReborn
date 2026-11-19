@@ -130,6 +130,16 @@ public partial class ProgramsViewModel : ObservableObject
         _loading = true;
         var s = AppServices.Settings;
         var selected = s.SelectedPrograms?.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Programas nuevos que vienen marcados: se añaden una vez a una selección ya guardada.
+        if (selected is not null)
+        {
+            foreach (var id in SoftwareCatalog.AddedPreselected.Where(id => !s.SeenNewPrograms.Contains(id, StringComparer.OrdinalIgnoreCase)))
+            {
+                selected.Add(id);
+                s.SeenNewPrograms.Add(id);
+                s.SelectedPrograms!.Add(id);
+            }
+        }
         foreach (var item in AllItems)
             item.IsSelected = selected?.Contains(item.Def.Id) ?? item.Def.Preselected;
         GitHubUser = s.GitHubUser;

@@ -62,7 +62,8 @@ public class RebornTests
 
         // La lista con la que se formatea habitualmente viene marcada.
         string[] usual = ["discord", "nvidia-app", "brave", "chrome", "helium", "epic", "steam", "spotify", "obs", "protonvpn", "warp",
-            "vscode", "eclipse", "veracrypt", "eartrumpet", "hoyoplay", "audacity", "winrar", "git", "python", "davinci", "malwarebytes", "whatsapp", "minecraft"];
+            "vscode", "eclipse", "veracrypt", "eartrumpet", "hoyoplay", "audacity", "winrar", "git", "python", "davinci", "malwarebytes", "whatsapp", "minecraft", "mullvad-browser", "claude", "chatgpt"];
+        Assert.All(SoftwareCatalog.AddedPreselected, id => Assert.True(SoftwareCatalog.Find(id)?.Preselected == true));
         Assert.Null(SoftwareCatalog.Find("telegram"));
 
         // Todos los programas llevan su icono dentro del ejecutable.

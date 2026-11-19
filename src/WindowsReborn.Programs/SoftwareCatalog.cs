@@ -24,6 +24,7 @@ public enum CatalogCategory
     Browsers,
     Gaming,
     Communication,
+    AI,
     Media,
     Development,
     Utilities,
@@ -74,6 +75,8 @@ public static class SoftwareCatalog
         new() { Id = "vivaldi", Name = "Vivaldi", Category = CatalogCategory.Browsers, Color = "EF3939", Monogram = "Vi", WinGetId = "Vivaldi.Vivaldi", Homepage = "https://vivaldi.com" },
         new() { Id = "zen", Name = "Zen Browser", Category = CatalogCategory.Browsers, Color = "F76F53", Monogram = "Z", WinGetId = "Zen-Team.Zen-Browser", Homepage = "https://zen-browser.app" },
         new() { Id = "librewolf", Name = "LibreWolf", Category = CatalogCategory.Browsers, Color = "00ACFF", Monogram = "LW", WinGetId = "LibreWolf.LibreWolf", Homepage = "https://librewolf.net" },
+        new() { Id = "mullvad-browser", Name = "Mullvad Browser", Category = CatalogCategory.Browsers, Color = "294D73", Monogram = "MB", WinGetId = "MullvadVPN.MullvadBrowser", Homepage = "https://mullvad.net/browser", Preselected = true },
+        new() { Id = "comet", Name = "Comet (Perplexity)", Category = CatalogCategory.Browsers, Color = "20808D", Monogram = "Co", WinGetId = "Perplexity.Comet", Homepage = "https://www.perplexity.ai/comet" },
         new() { Id = "tor", Name = "Tor Browser", Category = CatalogCategory.Browsers, Color = "7D4698", Monogram = "T", WinGetId = "TorProject.TorBrowser", Homepage = "https://www.torproject.org" },
 
         // Juegos
@@ -96,6 +99,17 @@ public static class SoftwareCatalog
         new() { Id = "discord", Name = "Discord", Category = CatalogCategory.Communication, Color = "5865F2", Monogram = "D", WinGetId = "Discord.Discord", Homepage = "https://discord.com", Preselected = true },
         new() { Id = "whatsapp", Name = "WhatsApp", Category = CatalogCategory.Communication, Color = "25D366", Monogram = "W", Source = CatalogSource.MsStore, WinGetId = "9NKSQGP7F2NH",
             Homepage = "https://www.whatsapp.com/download", DetectName = "WhatsApp", Preselected = true },
+
+        // Inteligencia artificial
+        new() { Id = "claude", Name = "Claude", Category = CatalogCategory.AI, Color = "D97757", Monogram = "Cl", WinGetId = "Anthropic.Claude", Homepage = "https://claude.ai/download", Preselected = true },
+        new() { Id = "chatgpt", Name = "ChatGPT", Category = CatalogCategory.AI, Color = "10A37F", Monogram = "GP", WinGetId = "OpenAI.ChatGPT", Homepage = "https://openai.com/chatgpt/desktop/", Preselected = true },
+        new() { Id = "copilot", Name = "Microsoft Copilot", Category = CatalogCategory.AI, Color = "0078D4", Monogram = "Cp", Source = CatalogSource.MsStore, WinGetId = "XP9CXNGPPJ97XX", Homepage = "https://copilot.microsoft.com", DetectName = "Copilot" },
+        new() { Id = "perplexity", Name = "Perplexity", Category = CatalogCategory.AI, Color = "20808D", Monogram = "Px", Source = CatalogSource.MsStore, WinGetId = "9P9XG917PWCJ", Homepage = "https://www.perplexity.ai", DetectName = "Perplexity" },
+        new() { Id = "claude-code", Name = "Claude Code", Category = CatalogCategory.AI, Color = "D97757", Monogram = "CC", WinGetId = "Anthropic.ClaudeCode", Homepage = "https://claude.com/claude-code" },
+        new() { Id = "codex", Name = "Codex CLI (OpenAI)", Category = CatalogCategory.AI, Color = "10A37F", Monogram = "Cx", WinGetId = "OpenAI.Codex", Homepage = "https://openai.com/codex" },
+        new() { Id = "cursor", Name = "Cursor", Category = CatalogCategory.AI, Color = "111111", Monogram = "Cu", WinGetId = "Anysphere.Cursor", Homepage = "https://cursor.com" },
+        new() { Id = "ollama", Name = "Ollama", Category = CatalogCategory.AI, Color = "222222", Monogram = "Ol", WinGetId = "Ollama.Ollama", Homepage = "https://ollama.com" },
+        new() { Id = "lmstudio", Name = "LM Studio", Category = CatalogCategory.AI, Color = "4F46E5", Monogram = "LM", WinGetId = "ElementLabs.LMStudio", Homepage = "https://lmstudio.ai" },
 
         // Multimedia
         new() { Id = "spotify", Name = "Spotify", Category = CatalogCategory.Media, Color = "1DB954", Monogram = "Sp", WinGetId = "Spotify.Spotify", Homepage = "https://www.spotify.com", Preselected = true },
@@ -127,12 +141,19 @@ public static class SoftwareCatalog
         new() { Id = "hwinfo", Name = "HWiNFO", Category = CatalogCategory.Utilities, Color = "1E5AA8", Monogram = "Hw", WinGetId = "REALiX.HWiNFO", Homepage = "https://www.hwinfo.com" },
 
         // Seguridad y red
+        new() { Id = "mullvadvpn", Name = "Mullvad VPN", Category = CatalogCategory.Security, Color = "294D73", Monogram = "MV", WinGetId = "MullvadVPN.MullvadVPN", Homepage = "https://mullvad.net" },
         new() { Id = "protonvpn", Name = "Proton VPN", Category = CatalogCategory.Security, Color = "6D4AFF", Monogram = "P", WinGetId = "Proton.ProtonVPN", Homepage = "https://protonvpn.com", Preselected = true },
         new() { Id = "warp", Name = "Cloudflare WARP", Category = CatalogCategory.Security, Color = "F38020", Monogram = "W", WinGetId = "Cloudflare.Warp", Homepage = "https://one.one.one.one", Preselected = true },
         new() { Id = "veracrypt", Name = "VeraCrypt", Category = CatalogCategory.Security, Color = "1F4E79", Monogram = "Vc", WinGetId = "IDRIX.VeraCrypt", Homepage = "https://www.veracrypt.fr", Preselected = true },
         new() { Id = "malwarebytes", Name = "Malwarebytes", Category = CatalogCategory.Security, Color = "0D3ECC", Monogram = "Mb", WinGetId = "Malwarebytes.Malwarebytes", Homepage = "https://www.malwarebytes.com", Preselected = true },
         new() { Id = "bitwarden", Name = "Bitwarden", Category = CatalogCategory.Security, Color = "175DDC", Monogram = "Bw", WinGetId = "Bitwarden.Bitwarden", Homepage = "https://bitwarden.com" },
     ];
+
+    /// <summary>
+    /// Programas añadidos después de la 1.0.4 que vienen marcados: se marcan también a quien
+    /// ya tenía su selección guardada (una sola vez).
+    /// </summary>
+    public static IReadOnlyList<string> AddedPreselected { get; } = ["mullvad-browser", "claude", "chatgpt"];
 
     public static CatalogProgram? Find(string id) => All.FirstOrDefault(p => p.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 }

@@ -40,12 +40,15 @@
     "es": { "title": "Casillas para seleccionar elementos", "desc": "Añade una casilla a cada archivo para seleccionar varios sin teclado." },
     "en": { "title": "Item check boxes", "desc": "Adds a check box to each file to select several without the keyboard." } },
 
-  { "id": "explorer.no-recent", "category": "explorer", "risk": 1, "restart": "explorer",
-    "settings": [
-      { "key": "@explorer", "name": "ShowRecent", "on": 0, "off": null },
-      { "key": "@explorer", "name": "ShowFrequent", "on": 0, "off": null } ],
-    "es": { "title": "Ocultar archivos recientes y carpetas frecuentes", "desc": "Inicio/Acceso rápido deja de mostrar lo último que abriste." },
-    "en": { "title": "Hide recent files and frequent folders", "desc": "Home/Quick access stops showing what you opened recently." } },
+  { "id": "explorer.no-recent-files", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@explorer", "name": "ShowRecent", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar archivos recientes en el Explorador", "desc": "Inicio del Explorador deja de mostrar los archivos que abriste hace poco." },
+    "en": { "title": "Hide recent files in File Explorer", "desc": "File Explorer Home stops showing files you opened recently." } },
+
+  { "id": "explorer.no-frequent-folders", "category": "explorer", "risk": 1, "restart": "explorer",
+    "settings": [ { "key": "@explorer", "name": "ShowFrequent", "on": 0, "off": null } ],
+    "es": { "title": "Ocultar carpetas frecuentes en el Explorador", "desc": "El Acceso rápido deja de añadir solo las carpetas que más usas." },
+    "en": { "title": "Hide frequent folders in File Explorer", "desc": "Quick access stops adding the folders you use most." } },
 
   { "id": "explorer.classic-context-menu", "category": "explorer", "risk": 2, "restart": "explorer", "minBuild": 22000,
     "settings": [ { "key": "Software/Classes/CLSID/{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}/InprocServer32", "name": "", "type": "string", "on": "", "off": null } ],
@@ -79,10 +82,10 @@
     "es": { "title": "Alinear la barra de tareas a la izquierda", "desc": "Coloca Inicio y los iconos a la izquierda, como en Windows 10." },
     "en": { "title": "Align the taskbar to the left", "desc": "Places Start and icons on the left, as in Windows 10." } },
 
-  { "id": "taskbar.search", "category": "taskbar", "risk": 1, "choices": [ "hidden", "icon", "box" ],
-    "settings": [ { "key": "@search", "name": "SearchboxTaskbarMode", "values": { "hidden": 0, "icon": 1, "box": 2 } } ],
-    "es": { "title": "Búsqueda en la barra de tareas", "desc": "Elige si se muestra el cuadro de búsqueda, solo el icono o nada.", "choices": { "hidden": "Oculta", "icon": "Solo icono", "box": "Cuadro" } },
-    "en": { "title": "Search on the taskbar", "desc": "Choose a search box, an icon only or nothing.", "choices": { "hidden": "Hidden", "icon": "Icon only", "box": "Box" } } },
+  { "id": "taskbar.search", "category": "taskbar", "risk": 1, "choices": [ "hidden", "icon", "label", "box" ],
+    "settings": [ { "key": "@search", "name": "SearchboxTaskbarMode", "values": { "hidden": 0, "icon": 1, "label": 3, "box": 2 } } ],
+    "es": { "title": "Búsqueda en la barra de tareas", "desc": "Elige si se muestra el cuadro de búsqueda, el icono (con o sin texto) o nada.", "choices": { "hidden": "Oculta", "icon": "Solo icono", "label": "Icono y etiqueta", "box": "Cuadro" } },
+    "en": { "title": "Search on the taskbar", "desc": "Choose a search box, the icon (with or without a label) or nothing.", "choices": { "hidden": "Hidden", "icon": "Icon only", "label": "Icon and label", "box": "Box" } } },
 
   { "id": "taskbar.hide-task-view", "category": "taskbar", "risk": 1,
     "settings": [ { "key": "@adv", "name": "ShowTaskViewButton", "on": 0, "off": null } ],
@@ -90,7 +93,7 @@
     "en": { "title": "Hide the Task view button", "desc": "Removes the virtual desktops button. Win+Tab still works." } },
 
   { "id": "taskbar.combine", "category": "taskbar", "risk": 1, "builds": [ [ 0, 21999 ], [ 22631, 0 ] ], "restart": "explorer", "choices": [ "always", "full", "never" ],
-    "settings": [ { "key": "@adv", "name": "TaskbarGlomLevel", "values": { "always": 0, "full": 1, "never": 2 } } ],
+    "settings": [ { "key": "@adv", "name": "TaskbarGlomLevel", "default": "0", "values": { "always": 0, "full": 1, "never": 2 } } ],
     "es": { "title": "Combinar botones de la barra de tareas", "desc": "Agrupa las ventanas de una misma aplicación o muestra cada una con su nombre.", "choices": { "always": "Siempre", "full": "Si está llena", "never": "Nunca" } },
     "en": { "title": "Combine taskbar buttons", "desc": "Group windows of the same app or show each with its label.", "choices": { "always": "Always", "full": "When full", "never": "Never" } } },
 
@@ -135,8 +138,8 @@
     "es": { "title": "Sin recomendaciones de consejos y aplicaciones", "desc": "Inicio deja de recomendar consejos, accesos directos y aplicaciones nuevas.", "warn": "Microsoft cambia a menudo esta sección; en algunas compilaciones puede no tener efecto." },
     "en": { "title": "No tips and app recommendations", "desc": "Start stops recommending tips, shortcuts and new apps.", "warn": "Microsoft changes this section often; it may have no effect on some builds." } },
 
-  { "id": "start.layout", "category": "start", "risk": 1, "minBuild": 22621, "choices": [ "default", "pins", "recs" ],
-    "settings": [ { "key": "@adv", "name": "Start_Layout", "values": { "default": 0, "pins": 1, "recs": 2 } } ],
+  { "id": "start.layout", "category": "start", "risk": 1, "builds": [ [ 22621, 26199 ] ], "choices": [ "default", "pins", "recs" ],
+    "settings": [ { "key": "@adv", "name": "Start_Layout", "default": "0", "values": { "default": 0, "pins": 1, "recs": 2 } } ],
     "es": { "title": "Distribución del menú Inicio", "desc": "Más espacio para aplicaciones ancladas o para recomendaciones.", "choices": { "default": "Predeterminada", "pins": "Más anclados", "recs": "Más recomendaciones" } },
     "en": { "title": "Start menu layout", "desc": "More room for pinned apps or for recommendations.", "choices": { "default": "Default", "pins": "More pins", "recs": "More recommendations" } } },
 
@@ -463,8 +466,8 @@
 
   { "id": "privacy.nvidia-telemetry", "category": "privacy", "risk": 1,
     "settings": [ { "hive": "HKLM", "key": "SOFTWARE/NVIDIA Corporation/NvControlPanel2/Client", "name": "OptInOrOutPreference", "on": 0, "off": 1, "requireKey": true } ],
-    "es": { "title": "Desactivar la telemetría de NVIDIA", "desc": "El controlador de NVIDIA deja de enviar datos de uso. Solo aparece si tienes una gráfica NVIDIA." },
-    "en": { "title": "Turn off NVIDIA telemetry", "desc": "The NVIDIA driver stops sending usage data. Only shown with an NVIDIA graphics card." } },
+    "es": { "title": "Desactivar la telemetría de NVIDIA", "desc": "El panel de control de NVIDIA deja de enviar datos de uso. Solo aparece con controladores que tienen esta opción." },
+    "en": { "title": "Turn off NVIDIA telemetry", "desc": "The NVIDIA Control Panel stops sending usage data. Only shown with drivers that have this option." } },
 
   { "id": "privacy.edge-telemetry", "category": "privacy", "risk": 2,
     "settings": [
@@ -497,11 +500,14 @@
     "en": { "title": "Hardware-accelerated GPU scheduling", "desc": "The GPU manages its own memory, lowering latency in games on modern cards.", "warn": "With old drivers or cards it may cause stutter; turn it off if you notice issues." } },
 
   { "id": "performance.network-throttling", "category": "performance", "risk": 2, "restart": "reboot",
-    "settings": [
-      { "hive": "HKLM", "key": "SOFTWARE/Microsoft/Windows NT/CurrentVersion/Multimedia/SystemProfile", "name": "NetworkThrottlingIndex", "on": 4294967295, "off": 10 },
-      { "hive": "HKLM", "key": "SOFTWARE/Microsoft/Windows NT/CurrentVersion/Multimedia/SystemProfile", "name": "SystemResponsiveness", "on": 10, "off": 20 } ],
-    "es": { "title": "Sin limitación de red multimedia", "desc": "Quita el límite de paquetes de red mientras se reproduce audio o vídeo y reserva menos CPU a tareas de fondo.", "warn": "Útil sobre todo en juegos online; en equipos modestos el audio podría cortarse." },
-    "en": { "title": "No multimedia network throttling", "desc": "Removes the network packet limit during audio/video playback and reserves less CPU for background tasks.", "warn": "Mostly useful for online games; on modest PCs audio could stutter." } },
+    "settings": [ { "hive": "HKLM", "key": "SOFTWARE/Microsoft/Windows NT/CurrentVersion/Multimedia/SystemProfile", "name": "NetworkThrottlingIndex", "on": 4294967295, "off": 10 } ],
+    "es": { "title": "Sin limitación de red multimedia", "desc": "Quita el límite de paquetes de red que Windows aplica mientras se reproduce audio o vídeo.", "warn": "Útil sobre todo en juegos online; en equipos modestos el audio podría cortarse." },
+    "en": { "title": "No multimedia network throttling", "desc": "Removes the network packet limit Windows applies during audio or video playback.", "warn": "Mostly useful for online games; on modest PCs audio could stutter." } },
+
+  { "id": "performance.system-responsiveness", "category": "performance", "risk": 2, "restart": "reboot",
+    "settings": [ { "hive": "HKLM", "key": "SOFTWARE/Microsoft/Windows NT/CurrentVersion/Multimedia/SystemProfile", "name": "SystemResponsiveness", "on": 10, "off": 20 } ],
+    "es": { "title": "Menos CPU reservada a tareas de fondo", "desc": "Windows reserva el 10 % de la CPU (en vez del 20 %) a tareas de fondo mientras juegas o reproduces contenido.", "warn": "Las tareas en segundo plano (descargas, grabación) pueden ir algo más lentas mientras juegas." },
+    "en": { "title": "Less CPU reserved for background tasks", "desc": "Windows reserves 10% of the CPU (instead of 20%) for background tasks while you play or stream.", "warn": "Background tasks (downloads, recording) may run slightly slower while you play." } },
 
   { "id": "performance.startup-delay", "category": "performance", "risk": 1,
     "settings": [ { "key": "@explorer/Serialize", "name": "StartupDelayInMSec", "on": 0, "off": null } ],
@@ -562,10 +568,9 @@
 
   { "id": "privacy.diag-services", "category": "privacy", "risk": 3, "restart": "reboot",
     "settings": [
-      { "hive": "HKLM", "key": "@services/diagsvc", "name": "Start", "on": 4, "off": 3, "requireKey": true },
-      { "hive": "HKLM", "key": "@services/diagnosticshub.standardcollector.service", "name": "Start", "on": 4, "off": 3, "requireKey": true } ],
-    "es": { "title": "Desactivar los servicios de diagnóstico", "desc": "Detiene los servicios que recogen diagnósticos del sistema (además de la telemetría).", "warn": "El solucionador de problemas de Windows y las herramientas de rendimiento de Visual Studio dejarán de funcionar." },
-    "en": { "title": "Turn off diagnostic services", "desc": "Stops the services that collect system diagnostics (on top of telemetry).", "warn": "Windows troubleshooters and Visual Studio performance tools will stop working." } },
+      { "hive": "HKLM", "key": "@services/diagsvc", "name": "Start", "on": 4, "off": 3, "requireKey": true } ],
+    "es": { "title": "Desactivar el servicio de diagnóstico", "desc": "Detiene el servicio de diagnóstico que recoge información del sistema (además de la telemetría).", "warn": "Los solucionadores de problemas de Windows pueden dejar de funcionar." },
+    "en": { "title": "Turn off the diagnostic service", "desc": "Stops the diagnostic service that collects system information (on top of telemetry).", "warn": "Windows troubleshooters may stop working." } },
 
   { "id": "privacy.windows-ink", "category": "privacy", "risk": 1,
     "settings": [ { "hive": "HKLM", "key": "Software/Policies/Microsoft/WindowsInkWorkspace", "name": "AllowWindowsInkWorkspace", "on": 0, "off": null } ],
@@ -616,8 +621,8 @@
     "settings": [
       { "key": "Software/Classes/AllFilesystemObjects/shellex/ContextMenuHandlers/Copy To", "name": "", "type": "string", "on": "{C2FBB630-2971-11D1-A18C-00C04FD75D13}", "off": null },
       { "key": "Software/Classes/AllFilesystemObjects/shellex/ContextMenuHandlers/Move To", "name": "", "type": "string", "on": "{C2FBB631-2971-11D1-A18C-00C04FD75D13}", "off": null } ],
-    "es": { "title": "Añadir «Copiar a» y «Mover a» al clic derecho", "desc": "Copia o mueve archivos a otra carpeta eligiéndola en una ventana, sin arrastrar." },
-    "en": { "title": "Add \"Copy to\" and \"Move to\" to right-click", "desc": "Copy or move files to another folder by picking it in a window, without dragging." } },
+    "es": { "title": "Añadir «Copiar a» y «Mover a» al clic derecho", "desc": "Copia o mueve archivos a otra carpeta eligiéndola en una ventana. Aparece en el menú clásico («Mostrar más opciones»)." },
+    "en": { "title": "Add \"Copy to\" and \"Move to\" to right-click", "desc": "Copy or move files to another folder by picking it in a window. Shows in the classic menu (\"Show more options\")." } },
 
   { "id": "explorer.no-store-open-with", "category": "explorer", "risk": 1,
     "settings": [ { "key": "Software/Microsoft/Windows/CurrentVersion/Policies/Explorer", "name": "NoInternetOpenWith", "on": 1, "off": null } ],

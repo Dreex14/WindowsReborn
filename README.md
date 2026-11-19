@@ -28,7 +28,8 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 - **Programas**: casillas con lo habitual (Discord, NVIDIA App, Brave, Chrome, Helium, Epic
   Games, Steam, Spotify, OBS, Proton VPN, Cloudflare WARP, VS Code, Eclipse, VeraCrypt,
   EarTrumpet, HoYoPlay, Audacity, WinRAR, Git, Python, DaVinci Resolve, Malwarebytes, WhatsApp, Minecraft
-  (Java, Windows heredado), Opera, Vivaldi, Zen y más), cada uno con
+  (Java, Windows heredado), Opera, Vivaldi, Zen, Mullvad Browser, Claude, ChatGPT y otras apps de IA, y más),
+  cada uno con
   su icono. Se instala
   siempre **la última versión oficial**, sin configurar nada. Detecta lo que ya tienes y
   ofrece actualizarlo.

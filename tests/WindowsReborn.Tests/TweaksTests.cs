@@ -61,6 +61,20 @@ public class TweaksTests
     }
 
     [Fact]
+    public void Every_admin_operation_is_accepted_by_the_elevated_helper()
+    {
+        // El proceso con permisos de administrador rechaza lo que no esté en el catálogo:
+        // cualquier operación de cualquier opción tiene que pasar ese filtro o el ajuste fallaría.
+        var rejected = new List<string>();
+        foreach (var t in TweakCatalog.All.Where(t => t.Kind != TweakKind.Info))
+            foreach (var option in t.Options)
+                foreach (var op in TweakEngine.OpsFor(t, option).Where(SystemRegistryWriter.NeedsElevation))
+                    if (!TweakCatalog.IsAllowed(op))
+                        rejected.Add($"{t.Id}/{option}: {op.Type} {op.Hive}\\{op.Key}\\{op.Name}");
+        Assert.True(rejected.Count == 0, "Rejected: " + string.Join("; ", rejected));
+    }
+
+    [Fact]
     public async Task Permission_has_three_states_matching_both_windows_switches()
     {
         var (engine, reg) = NewEngine();

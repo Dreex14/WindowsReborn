@@ -40,6 +40,9 @@ public sealed class AppSettings
     /// <summary>Programas del catálogo marcados.</summary>
     public List<string>? SelectedPrograms { get; set; }
 
+    /// <summary>Programas nuevos ya ofrecidos (para marcar una sola vez los que vienen marcados).</summary>
+    public List<string> SeenNewPrograms { get; set; } = [];
+
     /// <summary>Usuario de GitHub cuyas releases se listan en «Mis programas de GitHub».</summary>
     public string GitHubUser { get; set; } = "Dreex14";
 
