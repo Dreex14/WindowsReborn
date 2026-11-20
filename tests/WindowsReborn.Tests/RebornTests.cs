@@ -30,6 +30,31 @@ public class RebornTests
     }
 
     [Fact]
+    public void Catalog_installers_are_verified_and_have_icons()
+    {
+        var assets = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "src", "WindowsReborn.App", "Assets", "Programs"));
+        foreach (var p in SoftwareCatalog.All)
+        {
+            Assert.True(File.Exists(Path.Combine(assets, p.Id + ".png")), "Falta el icono de " + p.Id);
+            // Lo que se descarga fuera de WinGet debe comprobar el firmante del instalador.
+            if (p.Source is CatalogSource.OfficialPageLink or CatalogSource.DirectLatest)
+                Assert.False(string.IsNullOrWhiteSpace(p.Publisher), p.Id);
+        }
+        var ids = SoftwareCatalog.All.Where(p => p.WinGetId is not null).Select(p => p.WinGetId!).ToList();
+        Assert.Equal(ids.Count, ids.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        Assert.All(SoftwareCatalog.AddedPreselected, id => Assert.True(SoftwareCatalog.Find(id)?.Preselected, id));
+    }
+
+    [Theory]
+    [InlineData("3.14.10", true)]
+    [InlineData("3.15.2", true)]
+    [InlineData("3.15.0b2", false)]
+    [InlineData("3.15.0rc1", false)]
+    [InlineData("3.15.0-alpha.3", false)]
+    public void Python_only_takes_stable_versions(string version, bool stable) =>
+        Assert.Equal(stable, SoftwareInstaller.IsStableVersion(version));
+
+    [Fact]
     public void Software_catalog_is_consistent()
     {
         var all = SoftwareCatalog.All;
@@ -163,7 +188,7 @@ public class RebornTests
         Assert.Null(SecretStore.Unprotect("basura"));
         Assert.Null(SecretStore.Unprotect(null));
 
-        // «Mi configuración» nunca lleva el token, ni cifrado.
+        // «Mi configuración» no lleva el token salvo que el usuario lo pida.
         using var tmp = new TempDir();
         var settings = new AppSettings { GitHubTokenProtected = protectedValue, GitHubTokenUser = "someone" };
         var zip = Path.Combine(tmp.Root, "c.zip");
@@ -173,6 +198,36 @@ public class RebornTests
         var json = await reader.ReadToEndAsync();
         Assert.DoesNotContain(protectedValue, json);
         Assert.DoesNotContain("token", json, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Exported_GitHub_token_needs_the_password()
+    {
+        const string token = "github_pat_EXAMPLE_not_a_real_token_456";
+        var secret = PasswordVault.Protect(token, "una-contraseña-larga", "someone", iterations: 100_000);
+        Assert.Equal(token, PasswordVault.Unprotect(secret, "una-contraseña-larga"));
+        Assert.Null(PasswordVault.Unprotect(secret, "otra-contraseña"));
+        Assert.Throws<ArgumentException>(() => PasswordVault.Protect(token, "corta"));
+
+        // Alterar el archivo hace que falle (AES-GCM autentica los datos).
+        var tampered = Json.Deserialize<PasswordSecret>(Json.Serialize(secret))!;
+        var bytes = Convert.FromBase64String(tampered.Data);
+        bytes[0] ^= 1;
+        tampered.Data = Convert.ToBase64String(bytes);
+        Assert.Null(PasswordVault.Unprotect(tampered, "una-contraseña-larga"));
+        Assert.Null(PasswordVault.Unprotect(new PasswordSecret { Iterations = 10, Salt = secret.Salt, Nonce = secret.Nonce, Tag = secret.Tag, Data = secret.Data }, "una-contraseña-larga"));
+
+        // En el .zip solo va cifrado y vuelve a leerse.
+        using var tmp = new TempDir();
+        var zip = Path.Combine(tmp.Root, "c.zip");
+        var config = MyConfig.FromSettings(new AppSettings(), new Dictionary<string, string>(), [], [], "1");
+        config.GitHubToken = secret;
+        await config.SaveZipAsync(zip);
+        using (var archive = System.IO.Compression.ZipFile.OpenRead(zip))
+        using (var reader = new StreamReader(archive.GetEntry(MyConfig.EntryName)!.Open()))
+            Assert.DoesNotContain("EXAMPLE", await reader.ReadToEndAsync());
+        var loaded = await MyConfig.LoadAsync(zip);
+        Assert.Equal(token, PasswordVault.Unprotect(loaded.GitHubToken, "una-contraseña-larga"));
     }
 
     [Fact]

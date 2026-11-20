@@ -42,6 +42,12 @@ public sealed class MyConfig
     public List<string> BackupItems { get; set; } = [];
     public List<string> CustomFolders { get; set; } = [];
 
+    /// <summary>
+    /// Token de GitHub cifrado con una contraseña. Solo se incluye si el usuario lo pide al
+    /// exportar; nunca lo añade <see cref="FromSettings"/> ni <see cref="ApplyTo"/> lo lee.
+    /// </summary>
+    public PasswordSecret? GitHubToken { get; set; }
+
     public static MyConfig FromSettings(AppSettings s, IReadOnlyDictionary<string, string> tweaks, IEnumerable<string> programs,
         IEnumerable<string> backupItems, string appVersion) => new()
     {

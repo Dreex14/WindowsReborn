@@ -25,12 +25,17 @@ public partial class ConfigViewModel : ObservableObject
     [ObservableProperty] private string? _statusText;
     [ObservableProperty] private int _languageIndex;
     [ObservableProperty] private int _themeIndex;
+    /// <summary>Incluir el token de GitHub (cifrado con contraseña) al guardar la configuración.</summary>
+    [ObservableProperty] private bool _includeGitHubToken;
+    [ObservableProperty] private bool _canIncludeGitHubToken;
 
     private MyConfig? _imported;
 
     public void RefreshSummary()
     {
         var c = BuildConfig();
+        CanIncludeGitHubToken = SecretStore.Unprotect(AppServices.Settings.GitHubTokenProtected) is not null;
+        if (!CanIncludeGitHubToken) IncludeGitHubToken = false;
         Summary = Loc.T("config.summary", c.Tweaks.Count, c.Programs.Count + c.GitHubRepos.Count, c.BackupItems.Count + c.CustomFolders.Count);
     }
 
@@ -56,7 +61,14 @@ public partial class ConfigViewModel : ObservableObject
         if (path is null) return;
         try
         {
-            await BuildConfig().SaveZipAsync(path);
+            var config = BuildConfig();
+            if (IncludeGitHubToken && SecretStore.Unprotect(AppServices.Settings.GitHubTokenProtected) is { } token)
+            {
+                var password = await Dialogs.PasswordAsync(Loc.T("config.token.title"), Loc.T("config.token.set"), Loc.T("config.export.button"), confirm: true);
+                if (password is null) return;
+                config.GitHubToken = PasswordVault.Protect(token, password, AppServices.Settings.GitHubTokenUser);
+            }
+            await config.SaveZipAsync(path);
             StatusText = Loc.T("config.exported", Path.GetFileName(path));
             Dialogs.OpenFolder(path);
         }
@@ -80,6 +92,7 @@ public partial class ConfigViewModel : ObservableObject
         {
             var config = await MyConfig.LoadAsync(path);
             config.ApplyTo(AppServices.Settings);
+            await ProgramsViewModel.ImportGitHubTokenAsync(config);
             if (config.Has(MyConfig.PartPrivacy) && config.Has(MyConfig.PartOptimize))
                 AppServices.TweakPreferences.Selections = new Dictionary<string, string>(config.Tweaks, StringComparer.OrdinalIgnoreCase);
             else

@@ -5,7 +5,8 @@ namespace WindowsReborn.Core.Configuration;
 
 /// <summary>
 /// Cifra datos sensibles (como el token de GitHub) con DPAPI: solo el mismo usuario de
-/// Windows en el mismo equipo puede descifrarlos. Nunca se guardan en claro ni se exportan.
+/// Windows en el mismo equipo puede descifrarlos. Nunca se guardan en claro; solo salen del equipo si el usuario los exporta
+/// cifrados con su propia contraseña (<see cref="PasswordVault"/>).
 /// </summary>
 public static class SecretStore
 {

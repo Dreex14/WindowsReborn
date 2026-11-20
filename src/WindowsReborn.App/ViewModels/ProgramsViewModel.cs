@@ -160,6 +160,35 @@ public partial class ProgramsViewModel : ObservableObject
         await LoadGitHubAsync();
     }
 
+    /// <summary>
+    /// Si la configuración trae el token cifrado con contraseña, la pide y lo guarda con DPAPI
+    /// en este PC. Devuelve true si se importó.
+    /// </summary>
+    public static async Task<bool> ImportGitHubTokenAsync(Core.Configuration.MyConfig config)
+    {
+        if (config.GitHubToken is null) return false;
+        string? error = null;
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            var password = await Dialogs.PasswordAsync(Loc.T("config.token.title"), Loc.T("config.token.ask", config.GitHubToken.User ?? "GitHub"),
+                Loc.T("config.token.unlock"), confirm: false, error);
+            if (password is null) return false;
+            var token = Core.Configuration.PasswordVault.Unprotect(config.GitHubToken, password);
+            if (token is null)
+            {
+                error = Loc.T("config.token.wrong");
+                continue;
+            }
+            AppServices.Settings.GitHubTokenProtected = Core.Configuration.SecretStore.Protect(token);
+            AppServices.Settings.GitHubTokenUser = config.GitHubToken.User;
+            if (string.IsNullOrWhiteSpace(AppServices.Settings.GitHubUser) && config.GitHubToken.User is { } user)
+                AppServices.Settings.GitHubUser = user;
+            await AppServices.SaveSettingsAsync();
+            return true;
+        }
+        return false;
+    }
+
     [RelayCommand]
     private static void OpenTokenPage() => Dialogs.OpenUri(TokenPageUrl);
     [ObservableProperty] private int _progress;
@@ -350,8 +379,11 @@ public partial class ProgramsViewModel : ObservableObject
     {
         var config = await ConfigFiles.LoadAsync();
         if (config is null) return;
+        var tokenImported = await ImportGitHubTokenAsync(config);
+        if (tokenImported) GitHubAccount = AppServices.Settings.GitHubTokenUser ?? "?";
         if (!config.Has(Core.Configuration.MyConfig.PartPrograms) || config.Programs.Count + config.GitHubRepos.Count == 0)
         {
+            if (tokenImported) await LoadGitHubAsync();
             StatusText = Loc.T("section.empty");
             return;
         }

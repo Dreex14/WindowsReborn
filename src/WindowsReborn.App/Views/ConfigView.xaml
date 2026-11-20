@@ -40,7 +40,11 @@
                         </Border>
                         <TextBlock Text="{l:Tr config.export}" Style="{StaticResource SectionTitle}" Margin="0,12,0,4" />
                         <TextBlock Text="{l:Tr config.export.hint}" Style="{StaticResource Caption}" />
-                        <TextBlock Text="{Binding Summary}" Style="{StaticResource Caption}" FontWeight="SemiBold" Margin="0,8,0,14" />
+                        <TextBlock Text="{Binding Summary}" Style="{StaticResource Caption}" FontWeight="SemiBold" Margin="0,8,0,10" />
+                        <StackPanel Margin="0,0,0,14" Visibility="{Binding CanIncludeGitHubToken, Converter={StaticResource BoolToVis}}">
+                            <CheckBox IsChecked="{Binding IncludeGitHubToken}" Content="{l:Tr config.token.include}" />
+                            <TextBlock Text="{l:Tr config.token.include.hint}" Style="{StaticResource Caption}" Margin="28,2,0,0" />
+                        </StackPanel>
                         <Button Style="{StaticResource GradientButton}" Command="{Binding ExportCommand}" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal"><ui:SymbolIcon Symbol="Save20" Foreground="White" Margin="0,0,8,0" /><TextBlock Text="{l:Tr config.export.button}" /></StackPanel>
                         </Button>

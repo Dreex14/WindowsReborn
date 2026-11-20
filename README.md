@@ -28,7 +28,8 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 - **Programas**: casillas con lo habitual (Discord, NVIDIA App, Brave, Chrome, Helium, Epic
   Games, Steam, Spotify, OBS, Proton VPN, Cloudflare WARP, VS Code, Eclipse, VeraCrypt,
   EarTrumpet, HoYoPlay, Audacity, WinRAR, Git, Python, DaVinci Resolve, Malwarebytes, WhatsApp, Minecraft
-  (Java, Windows heredado), Opera, Vivaldi, Zen, Mullvad Browser, Claude, ChatGPT y otras apps de IA, y más),
+  (Java, Windows heredado), Opera, Vivaldi, Zen, Mullvad Browser, Claude, ChatGPT y otras apps de IA, Windhawk,
+  Android Studio, Visual Studio, Blender, GIMP, Signal, Rufus, LibreOffice y más),
   cada uno con
   su icono. Se instala
   siempre **la última versión oficial**, sin configurar nada. Detecta lo que ya tienes y
@@ -36,7 +37,8 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 - **Mis programas de GitHub**: lista los `.exe` que publicas en GitHub, descarga siempre la última
   versión, comprueba su SHA-256 y crea accesos directos.
   Con un token de solo lectura también aparecen tus **repos privados** (el token se guarda cifrado
-  en el PC y nunca se exporta).
+  en el PC con DPAPI y solo va en «Mi configuración» si lo marcas, cifrado con una contraseña tuya
+  mediante AES-256-GCM y PBKDF2).
 - **Privacidad** (lo más importante): un botón aplica una configuración recomendada de
   ~35 ajustes (telemetría, ID de publicidad, Copilot, Recall, Bing en la búsqueda, apps
   patrocinadas, telemetría de Office/NVIDIA/Edge…).
@@ -56,6 +58,9 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
 ### Mi configuración
 Exporta en un `.zip` todo lo que has elegido y, en cada formateo, impórtalo y pulsa
 **Aplicar todo**: se aplican tus optimizaciones y se instalan tus programas.
+Si tienes conectada tu cuenta de GitHub, puedes marcar *Incluir mi token de GitHub*: se guarda
+cifrado con la contraseña que elijas y, al importarlo tras formatear, te la pide para volver a
+conectar tus repos privados sin crear otro token.
 
 También puedes guardar y cargar por separado la configuración de **Programas**,
 **Privacidad** y **Optimizar** con los botones *Guardar configuración* y *Cargar configuración*

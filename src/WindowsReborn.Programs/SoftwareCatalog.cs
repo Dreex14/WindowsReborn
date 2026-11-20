@@ -99,6 +99,7 @@ public static class SoftwareCatalog
         new() { Id = "discord", Name = "Discord", Category = CatalogCategory.Communication, Color = "5865F2", Monogram = "D", WinGetId = "Discord.Discord", Homepage = "https://discord.com", Preselected = true },
         new() { Id = "whatsapp", Name = "WhatsApp", Category = CatalogCategory.Communication, Color = "25D366", Monogram = "W", Source = CatalogSource.MsStore, WinGetId = "9NKSQGP7F2NH",
             Homepage = "https://www.whatsapp.com/download", DetectName = "WhatsApp", Preselected = true },
+        new() { Id = "signal", Name = "Signal", Category = CatalogCategory.Communication, Color = "3A76F0", Monogram = "Si", WinGetId = "OpenWhisperSystems.Signal", Homepage = "https://signal.org" },
 
         // Inteligencia artificial
         new() { Id = "claude", Name = "Claude", Category = CatalogCategory.AI, Color = "D97757", Monogram = "Cl", WinGetId = "Anthropic.Claude", Homepage = "https://claude.ai/download", Preselected = true },
@@ -118,6 +119,10 @@ public static class SoftwareCatalog
         new() { Id = "davinci", Name = "DaVinci Resolve", Category = CatalogCategory.Media, Color = "E04E39", Monogram = "Dv", Source = CatalogSource.OfficialPage,
             Homepage = "https://www.blackmagicdesign.com/products/davinciresolve", DetectName = "DaVinci Resolve", Preselected = true },
         new() { Id = "vlc", Name = "VLC", Category = CatalogCategory.Media, Color = "FF8800", Monogram = "V", WinGetId = "VideoLAN.VLC", Homepage = "https://www.videolan.org" },
+        new() { Id = "handbrake", Name = "HandBrake", Category = CatalogCategory.Media, Color = "C4302B", Monogram = "Hb", WinGetId = "HandBrake.HandBrake", Homepage = "https://handbrake.fr" },
+        new() { Id = "blender", Name = "Blender", Category = CatalogCategory.Media, Color = "E87D0D", Monogram = "Bl", WinGetId = "BlenderFoundation.Blender", Homepage = "https://www.blender.org" },
+        new() { Id = "gimp", Name = "GIMP", Category = CatalogCategory.Media, Color = "5C5543", Monogram = "Gm", WinGetId = "GIMP.GIMP.3", Homepage = "https://www.gimp.org" },
+        new() { Id = "krita", Name = "Krita", Category = CatalogCategory.Media, Color = "3BABFF", Monogram = "Kr", WinGetId = "KDE.Krita", Homepage = "https://krita.org" },
 
         // Desarrollo
         new() { Id = "vscode", Name = "Visual Studio Code", Category = CatalogCategory.Development, Color = "007ACC", Monogram = "VS", WinGetId = "Microsoft.VisualStudioCode", Homepage = "https://code.visualstudio.com", Preselected = true },
@@ -130,6 +135,14 @@ public static class SoftwareCatalog
         new() { Id = "java", Name = "Java 21 (Temurin JDK)", Category = CatalogCategory.Development, Color = "E76F00", Monogram = "J", WinGetId = "EclipseAdoptium.Temurin.21.JDK", Homepage = "https://adoptium.net" },
         new() { Id = "nodejs", Name = "Node.js LTS", Category = CatalogCategory.Development, Color = "5FA04E", Monogram = "Nd", WinGetId = "OpenJS.NodeJS.LTS", Homepage = "https://nodejs.org" },
         new() { Id = "notepadpp", Name = "Notepad++", Category = CatalogCategory.Development, Color = "90E59A", Monogram = "N+", WinGetId = "Notepad++.Notepad++", Homepage = "https://notepad-plus-plus.org" },
+        new() { Id = "android-studio", Name = "Android Studio", Category = CatalogCategory.Development, Color = "3DDC84", Monogram = "AS", WinGetId = "Google.AndroidStudio", Homepage = "https://developer.android.com/studio", Preselected = true },
+        new() { Id = "visualstudio", Name = "Visual Studio Community", Category = CatalogCategory.Development, Color = "68217A", Monogram = "VS", WinGetId = "Microsoft.VisualStudio.Community", Homepage = "https://visualstudio.microsoft.com/vs/community/" },
+        new() { Id = "jetbrains-toolbox", Name = "JetBrains Toolbox", Category = CatalogCategory.Development, Color = "000000", Monogram = "JB", WinGetId = "JetBrains.Toolbox", Homepage = "https://www.jetbrains.com/toolbox-app/" },
+        new() { Id = "github-desktop", Name = "GitHub Desktop", Category = CatalogCategory.Development, Color = "6E40C9", Monogram = "GH", WinGetId = "GitHub.GitHubDesktop", Homepage = "https://desktop.github.com" },
+        new() { Id = "docker", Name = "Docker Desktop", Category = CatalogCategory.Development, Color = "1D63ED", Monogram = "Dk", WinGetId = "Docker.DockerDesktop", Homepage = "https://www.docker.com/products/docker-desktop/" },
+        new() { Id = "powershell", Name = "PowerShell 7", Category = CatalogCategory.Development, Color = "2671BE", Monogram = "PS", WinGetId = "Microsoft.PowerShell", Homepage = "https://github.com/PowerShell/PowerShell" },
+        new() { Id = "unityhub", Name = "Unity Hub", Category = CatalogCategory.Development, Color = "222222", Monogram = "Un", WinGetId = "Unity.UnityHub", Homepage = "https://unity.com/download" },
+        new() { Id = "godot", Name = "Godot Engine", Category = CatalogCategory.Development, Color = "478CBF", Monogram = "Gd", WinGetId = "GodotEngine.GodotEngine", Homepage = "https://godotengine.org" },
 
         // Utilidades
         new() { Id = "winrar", Name = "WinRAR", Category = CatalogCategory.Utilities, Color = "7B3FA0", Monogram = "R", WinGetId = "RARLab.WinRAR", Homepage = "https://www.win-rar.com", Preselected = true },
@@ -139,6 +152,15 @@ public static class SoftwareCatalog
         new() { Id = "sharex", Name = "ShareX", Category = CatalogCategory.Utilities, Color = "2E9BE6", Monogram = "Sx", WinGetId = "ShareX.ShareX", Homepage = "https://getsharex.com" },
         new() { Id = "everything", Name = "Everything", Category = CatalogCategory.Utilities, Color = "F28C28", Monogram = "Ev", WinGetId = "voidtools.Everything", Homepage = "https://www.voidtools.com" },
         new() { Id = "hwinfo", Name = "HWiNFO", Category = CatalogCategory.Utilities, Color = "1E5AA8", Monogram = "Hw", WinGetId = "REALiX.HWiNFO", Homepage = "https://www.hwinfo.com" },
+        new() { Id = "windhawk", Name = "Windhawk", Category = CatalogCategory.Utilities, Color = "2B2D42", Monogram = "Wh", WinGetId = "RamenSoftware.Windhawk", Homepage = "https://windhawk.net", Preselected = true },
+        new() { Id = "translucenttb", Name = "TranslucentTB", Category = CatalogCategory.Utilities, Color = "0078D4", Monogram = "TB", WinGetId = "CharlesMilette.TranslucentTB", Homepage = "https://github.com/TranslucentTB/TranslucentTB" },
+        new() { Id = "flowlauncher", Name = "Flow Launcher", Category = CatalogCategory.Utilities, Color = "4A90D9", Monogram = "FL", WinGetId = "Flow-Launcher.Flow-Launcher", Homepage = "https://www.flowlauncher.com" },
+        new() { Id = "cpuz", Name = "CPU-Z", Category = CatalogCategory.Utilities, Color = "6A2C91", Monogram = "CZ", WinGetId = "CPUID.CPU-Z", Homepage = "https://www.cpuid.com/softwares/cpu-z.html" },
+        new() { Id = "wiztree", Name = "WizTree", Category = CatalogCategory.Utilities, Color = "2E7D32", Monogram = "WT", WinGetId = "AntibodySoftware.WizTree", Homepage = "https://diskanalyzer.com" },
+        new() { Id = "rufus", Name = "Rufus", Category = CatalogCategory.Utilities, Color = "1C6EA4", Monogram = "Ru", WinGetId = "Rufus.Rufus", Homepage = "https://rufus.ie" },
+        new() { Id = "qbittorrent", Name = "qBittorrent", Category = CatalogCategory.Utilities, Color = "2F67BA", Monogram = "qB", WinGetId = "qBittorrent.qBittorrent", Homepage = "https://www.qbittorrent.org" },
+        new() { Id = "libreoffice", Name = "LibreOffice", Category = CatalogCategory.Utilities, Color = "18A303", Monogram = "LO", WinGetId = "TheDocumentFoundation.LibreOffice", Homepage = "https://www.libreoffice.org" },
+        new() { Id = "obsidian", Name = "Obsidian", Category = CatalogCategory.Utilities, Color = "7C3AED", Monogram = "Ob", WinGetId = "Obsidian.Obsidian", Homepage = "https://obsidian.md" },
 
         // Seguridad y red
         new() { Id = "mullvadvpn", Name = "Mullvad VPN", Category = CatalogCategory.Security, Color = "294D73", Monogram = "MV", WinGetId = "MullvadVPN.MullvadVPN", Homepage = "https://mullvad.net" },
@@ -147,13 +169,14 @@ public static class SoftwareCatalog
         new() { Id = "veracrypt", Name = "VeraCrypt", Category = CatalogCategory.Security, Color = "1F4E79", Monogram = "Vc", WinGetId = "IDRIX.VeraCrypt", Homepage = "https://www.veracrypt.fr", Preselected = true },
         new() { Id = "malwarebytes", Name = "Malwarebytes", Category = CatalogCategory.Security, Color = "0D3ECC", Monogram = "Mb", WinGetId = "Malwarebytes.Malwarebytes", Homepage = "https://www.malwarebytes.com", Preselected = true },
         new() { Id = "bitwarden", Name = "Bitwarden", Category = CatalogCategory.Security, Color = "175DDC", Monogram = "Bw", WinGetId = "Bitwarden.Bitwarden", Homepage = "https://bitwarden.com" },
+        new() { Id = "protonpass", Name = "Proton Pass", Category = CatalogCategory.Security, Color = "6D4AFF", Monogram = "PP", WinGetId = "Proton.ProtonPass", Homepage = "https://proton.me/pass" },
     ];
 
     /// <summary>
     /// Programas añadidos después de la 1.0.4 que vienen marcados: se marcan también a quien
     /// ya tenía su selección guardada (una sola vez).
     /// </summary>
-    public static IReadOnlyList<string> AddedPreselected { get; } = ["mullvad-browser", "claude", "chatgpt"];
+    public static IReadOnlyList<string> AddedPreselected { get; } = ["mullvad-browser", "claude", "chatgpt", "windhawk", "android-studio"];
 
     public static CatalogProgram? Find(string id) => All.FirstOrDefault(p => p.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 }

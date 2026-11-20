@@ -163,13 +163,17 @@ public sealed class SoftwareInstaller(IProcessRunner runner, HttpClient http, Do
             return _newestPythonId;
         var r = await runner.RunHiddenAsync(WinGetClient.Exe,
             ["search", "--id", prefix + ".", "--source", "winget", "--disable-interactivity", "--accept-source-agreements"], ct).ConfigureAwait(false);
+        // Solo versiones estables: una 3.x que aún está en alfa, beta o rc (3.15.0b2…) no cuenta.
         var best = WinGetClient.ParseTable(r.Output)
+            .Where(x => string.IsNullOrWhiteSpace(x.Version) || IsStableVersion(x.Version))
             .Select(x => x.Id)
             .Where(x => Regex.IsMatch(x, "^" + Regex.Escape(prefix) + @"\.\d+$", RegexOptions.IgnoreCase))
             .OrderByDescending(x => MinorOf(x, prefix))
             .FirstOrDefault();
         return _newestPythonId = best;
     }
+
+    internal static bool IsStableVersion(string version) => Regex.IsMatch(version.Trim(), @"^\d+(\.\d+)*$");
 
     private static int MinorOf(string id, string prefix) =>
         int.TryParse(id.AsSpan(prefix.Length + 1), out var n) ? n : -1;
