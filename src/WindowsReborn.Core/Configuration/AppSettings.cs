@@ -52,6 +52,12 @@ public sealed class AppSettings
     /// <summary>Usuario de GitHub cuyas releases se listan en «Mis programas de GitHub».</summary>
     public string GitHubUser { get; set; } = "Dreex14";
 
+    /// <summary>Token de GitHub para ver repos privados, cifrado con DPAPI (nunca se exporta).</summary>
+    public string? GitHubTokenProtected { get; set; }
+
+    /// <summary>Usuario de GitHub al que pertenece el token (solo para mostrarlo).</summary>
+    public string? GitHubTokenUser { get; set; }
+
     /// <summary>Repositorios extra (<c>owner/repo</c>) añadidos a mano.</summary>
     public List<string> ExtraRepos { get; set; } = [];
 

@@ -9,6 +9,7 @@ Windows Reborn (licencia MIT, Copyright (c) 2026 Dreex) usa los siguientes compo
 | .NET 10 (runtime, WPF) | MIT | https://github.com/dotnet/runtime · https://github.com/dotnet/wpf |
 | WPF-UI 4.3.0 | MIT | https://github.com/lepoco/wpfui |
 | CommunityToolkit.Mvvm 8.4.2 | MIT | https://github.com/CommunityToolkit/dotnet |
+| System.Security.Cryptography.ProtectedData 10.0.0 | MIT | https://github.com/dotnet/runtime |
 
 ## Solo para desarrollo y pruebas
 

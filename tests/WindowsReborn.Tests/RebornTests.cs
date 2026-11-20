@@ -154,6 +154,28 @@ public class RebornTests
     }
 
     [Fact]
+    public async Task GitHub_token_is_encrypted_and_never_exported()
+    {
+        const string token = "github_pat_EXAMPLE_not_a_real_token_123";
+        var protectedValue = SecretStore.Protect(token);
+        Assert.DoesNotContain("EXAMPLE", protectedValue);
+        Assert.Equal(token, SecretStore.Unprotect(protectedValue));
+        Assert.Null(SecretStore.Unprotect("basura"));
+        Assert.Null(SecretStore.Unprotect(null));
+
+        // «Mi configuración» nunca lleva el token, ni cifrado.
+        using var tmp = new TempDir();
+        var settings = new AppSettings { GitHubTokenProtected = protectedValue, GitHubTokenUser = "someone" };
+        var zip = Path.Combine(tmp.Root, "c.zip");
+        await MyConfig.FromSettings(settings, new Dictionary<string, string>(), [], [], "1").SaveZipAsync(zip);
+        using var archive = System.IO.Compression.ZipFile.OpenRead(zip);
+        using var reader = new StreamReader(archive.GetEntry(MyConfig.EntryName)!.Open());
+        var json = await reader.ReadToEndAsync();
+        Assert.DoesNotContain(protectedValue, json);
+        Assert.DoesNotContain("token", json, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Portable_paths_hide_the_user_folder()
     {
         var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

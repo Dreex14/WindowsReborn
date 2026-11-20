@@ -11,4 +11,11 @@ public partial class ProgramsView : UserControl
         DataContext = ViewModelLocator.Programs;
         Loaded += async (_, _) => await ViewModelLocator.Programs.EnsureLoadedAsync();
     }
+
+    private async void OnConnectGitHub(object sender, System.Windows.RoutedEventArgs e)
+    {
+        var token = TokenBox.Password;
+        TokenBox.Password = "";
+        await ViewModelLocator.Programs.ConnectGitHubAsync(token);
+    }
 }

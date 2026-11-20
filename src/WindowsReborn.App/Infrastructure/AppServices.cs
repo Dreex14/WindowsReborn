@@ -45,7 +45,7 @@ public static class AppServices
         var runner = new ProcessRunner();
         var winget = new WinGetClient(runner);
         Installer = new SoftwareInstaller(runner, Http, new Downloader(Http, winget));
-        GitHub = new GitHubAppsClient(Http, StateDirectory);
+        GitHub = new GitHubAppsClient(Http, StateDirectory, () => SecretStore.Unprotect(Settings.GitHubTokenProtected));
 
         var writer = new SystemRegistryWriter(StateDirectory);
         var journal = await TweakJournal.LoadAsync(Path.Combine(StateDirectory, TweakJournal.FileName));

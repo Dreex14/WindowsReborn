@@ -17,7 +17,9 @@ public sealed record GitHubApp(
     string Version,
     string AssetName,
     string DownloadUrl,
-    string? Sha256)
+    string? Sha256,
+    string? ApiAssetUrl = null,
+    bool IsPrivate = false)
 {
     public bool IsInstaller =>
         AssetName.EndsWith(".msi", StringComparison.OrdinalIgnoreCase) ||
@@ -38,8 +40,10 @@ public sealed class GitHubInstall
 /// Los programas portables se guardan en <c>%LOCALAPPDATA%\Programs\Windows Reborn Apps</c>
 /// con acceso directo en el menú Inicio; los instaladores se ejecutan.
 /// </summary>
-public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
+public sealed class GitHubAppsClient(HttpClient http, string stateDirectory, Func<string?>? tokenProvider = null)
 {
+    /// <summary>Token personal de GitHub (solo si el usuario conectó su cuenta para ver repos privados).</summary>
+    private string? Token => tokenProvider?.Invoke() is { Length: > 0 } t ? t : null;
     private static readonly Regex RepoPattern = new(@"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", RegexOptions.Compiled);
     private static readonly Regex UserPattern = new(@"^[A-Za-z0-9-]{1,39}$", RegexOptions.Compiled);
 
@@ -55,7 +59,20 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
     /// <summary>Repositorios públicos del usuario con una release que tenga un .exe/.zip/.msi.</summary>
     public async Task<IReadOnlyList<GitHubApp>> ListUserAppsAsync(string user, IEnumerable<string> extraRepos, CancellationToken ct)
     {
-        var repos = new List<(string FullName, string? Description)>();
+        var repos = new List<(string FullName, string? Description, bool Private)>();
+        if (Token is not null)
+        {
+            // Con la cuenta conectada se ven también los repos privados (propios y en los que colaboras).
+            using var mine = await GetJsonAsync("https://api.github.com/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator", ct).ConfigureAwait(false);
+            if (mine is not null)
+                foreach (var r in mine.RootElement.EnumerateArray())
+                {
+                    if (r.GetProperty("fork").GetBoolean() || r.GetProperty("archived").GetBoolean()) continue;
+                    repos.Add((r.GetProperty("full_name").GetString()!,
+                        r.TryGetProperty("description", out var d) && d.ValueKind == JsonValueKind.String ? d.GetString() : null,
+                        r.TryGetProperty("private", out var pv) && pv.GetBoolean()));
+                }
+        }
         if (IsValidUser(user))
         {
             using var doc = await GetJsonAsync($"https://api.github.com/users/{user}/repos?per_page=100&sort=updated", ct).ConfigureAwait(false);
@@ -64,21 +81,22 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
                 foreach (var r in doc.RootElement.EnumerateArray())
                 {
                     if (r.GetProperty("fork").GetBoolean() || r.GetProperty("archived").GetBoolean()) continue;
-                    repos.Add((r.GetProperty("full_name").GetString()!,
-                        r.TryGetProperty("description", out var d) && d.ValueKind == JsonValueKind.String ? d.GetString() : null));
+                    var full = r.GetProperty("full_name").GetString()!;
+                    if (repos.Any(x => x.FullName.Equals(full, StringComparison.OrdinalIgnoreCase))) continue;
+                    repos.Add((full, r.TryGetProperty("description", out var d) && d.ValueKind == JsonValueKind.String ? d.GetString() : null, false));
                 }
             }
         }
         foreach (var extra in extraRepos.Where(IsValidRepo))
             if (!repos.Any(r => r.FullName.Equals(extra, StringComparison.OrdinalIgnoreCase)))
-                repos.Add((extra, null));
+                repos.Add((extra, null, false));
 
-        var tasks = repos.Select(r => LatestAsync(r.FullName, r.Description, ct)).ToList();
+        var tasks = repos.Select(r => LatestAsync(r.FullName, r.Description, ct, r.Private)).ToList();
         var apps = await Task.WhenAll(tasks).ConfigureAwait(false);
         return apps.Where(a => a is not null).Select(a => a!).OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
     }
 
-    public async Task<GitHubApp?> LatestAsync(string repo, string? description, CancellationToken ct)
+    public async Task<GitHubApp?> LatestAsync(string repo, string? description, CancellationToken ct, bool isPrivate = false)
     {
         if (!IsValidRepo(repo)) return null;
         using var doc = await GetJsonAsync($"https://api.github.com/repos/{repo}/releases/latest", ct).ConfigureAwait(false);
@@ -91,6 +109,7 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
         {
             Name = a.GetProperty("name").GetString() ?? "",
             Url = a.GetProperty("browser_download_url").GetString() ?? "",
+            Api = a.TryGetProperty("url", out var u) && u.ValueKind == JsonValueKind.String ? u.GetString() : null,
             Digest = a.TryGetProperty("digest", out var d) && d.ValueKind == JsonValueKind.String ? d.GetString() : null,
         }).ToList();
 
@@ -107,7 +126,8 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
         var version = tag.TrimStart('v', 'V');
         var name = CleanName(releaseName, version) ?? repo.Split('/')[1].Replace('-', ' ');
         var sha = asset.Digest?.StartsWith("sha256:", StringComparison.OrdinalIgnoreCase) == true ? asset.Digest[7..] : null;
-        return new GitHubApp(repo, name, description, version, asset.Name, asset.Url, sha);
+        var api = asset.Api is not null && asset.Api.StartsWith($"https://api.github.com/repos/{repo}/releases/assets/", StringComparison.OrdinalIgnoreCase) ? asset.Api : null;
+        return new GitHubApp(repo, name, description, version, asset.Name, asset.Url, sha, api, isPrivate);
     }
 
     private static string? CleanName(string? releaseName, string version)
@@ -121,12 +141,26 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.Accept.ParseAdd("application/vnd.github+json");
+        if (Token is { } token) request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         using var response = await http.SendAsync(request, ct).ConfigureAwait(false);
         if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        if (response.StatusCode == HttpStatusCode.Unauthorized) throw new SourceException("source.github-token-invalid");
         if (response.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests)
             throw new SourceException("source.rate-limited");
         response.EnsureSuccessStatusCode();
         return await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false), cancellationToken: ct).ConfigureAwait(false);
+    }
+
+    /// <summary>Comprueba un token y devuelve el usuario de GitHub al que pertenece (o null si no vale).</summary>
+    public async Task<string?> ValidateTokenAsync(string token, CancellationToken ct)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user");
+        request.Headers.Accept.ParseAdd("application/vnd.github+json");
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        using var response = await http.SendAsync(request, ct).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode) return null;
+        using var doc = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false), cancellationToken: ct).ConfigureAwait(false);
+        return doc.RootElement.TryGetProperty("login", out var l) ? l.GetString() : null;
     }
 
     public Dictionary<string, GitHubInstall> LoadState()
@@ -219,7 +253,14 @@ public sealed class GitHubAppsClient(HttpClient http, string stateDirectory)
 
     private async Task DownloadAsync(GitHubApp app, string path, IProgress<string>? status, CancellationToken ct)
     {
-        using var response = await http.GetAsync(Http.RequireHttps(app.DownloadUrl), HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+        // Los repos privados se descargan por la API con el token (GitHub redirige a un enlace firmado sin el token).
+        using var request = new HttpRequestMessage(HttpMethod.Get, Http.RequireHttps(Token is not null && app.ApiAssetUrl is not null ? app.ApiAssetUrl : app.DownloadUrl));
+        if (Token is { } token && app.ApiAssetUrl is not null)
+        {
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            request.Headers.Accept.ParseAdd("application/octet-stream");
+        }
+        using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         var total = response.Content.Headers.ContentLength;
         string sha;

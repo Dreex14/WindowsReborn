@@ -35,6 +35,8 @@ pesado de un formateo: **guarda tus cosas antes**, y **después** las devuelve a
   ofrece actualizarlo.
 - **Mis programas de GitHub**: lista los `.exe` que publicas en GitHub, descarga siempre la última
   versión, comprueba su SHA-256 y crea accesos directos.
+  Con un token de solo lectura también aparecen tus **repos privados** (el token se guarda cifrado
+  en el PC y nunca se exporta).
 - **Privacidad** (lo más importante): un botón aplica una configuración recomendada de
   ~35 ajustes (telemetría, ID de publicidad, Copilot, Recall, Bing en la búsqueda, apps
   patrocinadas, telemetría de Office/NVIDIA/Edge…).

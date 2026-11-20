@@ -71,6 +71,7 @@ public partial class GitHubItem(GitHubApp app, string? installedVersion, Program
     public string Monogram => new string(App.Name.Where(char.IsLetterOrDigit).Take(2).ToArray()).ToUpperInvariant();
     public string? InstalledVersion { get; set; } = installedVersion;
 
+    public bool IsPrivate => App.IsPrivate;
     [ObservableProperty] private bool _isSelected;
     [ObservableProperty, NotifyPropertyChangedFor(nameof(StateText), nameof(ShowState))] private ItemState _state;
     [ObservableProperty, NotifyPropertyChangedFor(nameof(StateText))] private string? _detail;
@@ -111,6 +112,56 @@ public partial class ProgramsViewModel : ObservableObject
     [ObservableProperty] private string _newRepo = "";
     [ObservableProperty] private bool _desktopShortcut;
     [ObservableProperty] private string? _statusText;
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(IsGitHubConnected))] private string? _gitHubAccount;
+    [ObservableProperty] private bool _gitHubConnecting;
+    public bool IsGitHubConnected => GitHubAccount is not null;
+
+    public const string TokenPageUrl = "https://github.com/settings/personal-access-tokens/new?name=Windows+Reborn&description=Descargar+mis+releases+privadas&contents=read";
+
+    /// <summary>Conecta la cuenta de GitHub con un token de solo lectura (se guarda cifrado).</summary>
+    public async Task ConnectGitHubAsync(string token)
+    {
+        token = token.Trim();
+        if (token.Length == 0) return;
+        GitHubConnecting = true;
+        GitHubError = null;
+        try
+        {
+            var login = await AppServices.GitHub.ValidateTokenAsync(token, CancellationToken.None);
+            if (login is null)
+            {
+                GitHubError = Loc.T("programs.github.token-invalid");
+                return;
+            }
+            AppServices.Settings.GitHubTokenProtected = Core.Configuration.SecretStore.Protect(token);
+            AppServices.Settings.GitHubTokenUser = login;
+            if (string.IsNullOrWhiteSpace(AppServices.Settings.GitHubUser)) AppServices.Settings.GitHubUser = login;
+            await AppServices.SaveSettingsAsync();
+            GitHubAccount = login;
+            await LoadGitHubAsync();
+        }
+        catch (Exception)
+        {
+            GitHubError = Loc.T("programs.github.offline");
+        }
+        finally
+        {
+            GitHubConnecting = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DisconnectGitHubAsync()
+    {
+        AppServices.Settings.GitHubTokenProtected = null;
+        AppServices.Settings.GitHubTokenUser = null;
+        await AppServices.SaveSettingsAsync();
+        GitHubAccount = null;
+        await LoadGitHubAsync();
+    }
+
+    [RelayCommand]
+    private static void OpenTokenPage() => Dialogs.OpenUri(TokenPageUrl);
     [ObservableProperty] private int _progress;
 
     public ProgramsViewModel()
@@ -143,6 +194,8 @@ public partial class ProgramsViewModel : ObservableObject
         foreach (var item in AllItems)
             item.IsSelected = selected?.Contains(item.Def.Id) ?? item.Def.Preselected;
         GitHubUser = s.GitHubUser;
+        // El token cifrado solo vale en este usuario y equipo: si no se puede leer, se olvida.
+        GitHubAccount = Core.Configuration.SecretStore.Unprotect(s.GitHubTokenProtected) is not null ? s.GitHubTokenUser ?? "?" : null;
         DesktopShortcut = s.GitHubDesktopShortcut;
         foreach (var g in GitHubApps)
             g.IsSelected = s.SelectedRepos.Contains(g.Repo, StringComparer.OrdinalIgnoreCase);
