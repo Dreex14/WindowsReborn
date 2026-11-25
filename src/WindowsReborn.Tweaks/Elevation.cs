@@ -49,10 +49,11 @@ public sealed class SystemRegistryWriter(string stateDirectory) : IRegistryWrite
         {
             var request = new ElevatedRequest { Ops = machine, CreateRestorePoint = createRestorePoint };
             var response = IsElevated ? ElevatedHost.Execute(request) : await RunElevatedAsync(request, ct);
+            // Primero el punto de restauración: si falló, no se cambió nada y se ofrece seguir sin él.
+            if (createRestorePoint && response.RestorePointCreated == false)
+                throw new RestorePointException(response.Error ?? "restore-point-failed");
             if (!response.Ok)
                 throw new InvalidOperationException(response.Error ?? "elevated-failed");
-            if (createRestorePoint && response.RestorePointCreated != true)
-                throw new RestorePointException(response.Error ?? "restore-point-failed");
         }
 
         if (user.Count > 0)
@@ -67,15 +68,18 @@ public sealed class SystemRegistryWriter(string stateDirectory) : IRegistryWrite
     {
         Directory.CreateDirectory(stateDirectory);
         var file = Path.Combine(stateDirectory, $"elevated-{Guid.NewGuid():N}.json");
-        var responseFile = file + ".result";
-        await Json.WriteFileAtomicAsync(file, request, ct);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(Json.Serialize(request));
+        await File.WriteAllBytesAsync(file, bytes, ct);
+        // El hash va en la línea de comandos: si alguien cambia el archivo después de que el
+        // usuario acepte el aviso de Windows, la copia elevada lo rechaza.
+        var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
         try
         {
             var psi = new ProcessStartInfo(Environment.ProcessPath!)
             {
                 UseShellExecute = true,
                 Verb = "runas",
-                ArgumentList = { ElevatedHost.Argument, file },
+                ArgumentList = { ElevatedHost.Argument, file, hash },
                 WindowStyle = ProcessWindowStyle.Hidden,
             };
             Process? p;
@@ -88,16 +92,17 @@ public sealed class SystemRegistryWriter(string stateDirectory) : IRegistryWrite
                 throw new ElevationCancelledException();
             }
             if (p is null) throw new InvalidOperationException("elevated-failed");
+            int code;
             using (p)
+            {
                 await p.WaitForExitAsync(ct);
-            if (!File.Exists(responseFile))
-                return new ElevatedResponse { Ok = false, Error = "elevated-no-response" };
-            return await Json.ReadFileAsync<ElevatedResponse>(responseFile, ct) ?? new ElevatedResponse { Ok = false };
+                code = p.ExitCode;
+            }
+            return ElevatedHost.FromExitCode(code, request.CreateRestorePoint);
         }
         finally
         {
             try { File.Delete(file); } catch { }
-            try { File.Delete(responseFile); } catch { }
         }
     }
 
@@ -120,21 +125,42 @@ public static class ElevatedHost
 {
     public const string Argument = "--elevated";
 
-    public static int Run(string requestFile)
+    // Códigos de salida: la copia elevada nunca escribe en carpetas del usuario.
+    public const int Ok = 0, Failed = 1, NotAllowed = 2, RestorePointFailed = 3, BadRequest = 4;
+    private const int MaxRequestBytes = 1 << 20;
+
+    public static int Run(string requestFile, string expectedSha256)
     {
-        ElevatedResponse response;
         try
         {
-            var request = Json.Deserialize<ElevatedRequest>(File.ReadAllText(requestFile)) ?? new ElevatedRequest();
-            response = Execute(request);
+            var info = new FileInfo(requestFile);
+            if (!info.Exists || info.Length > MaxRequestBytes || info.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                return BadRequest;
+            var bytes = File.ReadAllBytes(requestFile);
+            var actual = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
+            if (!string.Equals(actual, expectedSha256, StringComparison.OrdinalIgnoreCase))
+                return BadRequest;
+            var request = Json.Deserialize<ElevatedRequest>(System.Text.Encoding.UTF8.GetString(bytes));
+            if (request is null) return BadRequest;
+            return ToExitCode(Execute(request));
         }
-        catch (Exception ex)
+        catch
         {
-            response = new ElevatedResponse { Ok = false, Error = ex.Message };
+            return Failed;
         }
-        File.WriteAllText(requestFile + ".result", Json.Serialize(response));
-        return response.Ok ? 0 : 1;
     }
+
+    internal static int ToExitCode(ElevatedResponse r) =>
+        r.Ok ? Ok : r.Error == "op-not-allowed" ? NotAllowed : r.RestorePointCreated == false ? RestorePointFailed : Failed;
+
+    public static ElevatedResponse FromExitCode(int code, bool restorePointRequested) => code switch
+    {
+        Ok => new ElevatedResponse { Ok = true, RestorePointCreated = restorePointRequested ? true : null },
+        NotAllowed => new ElevatedResponse { Ok = false, Error = "op-not-allowed" },
+        RestorePointFailed => new ElevatedResponse { Ok = false, Error = "restore-point-failed", RestorePointCreated = false },
+        BadRequest => new ElevatedResponse { Ok = false, Error = "elevated-bad-request" },
+        _ => new ElevatedResponse { Ok = false, Error = "elevated-failed" },
+    };
 
     public static ElevatedResponse Execute(ElevatedRequest request)
     {

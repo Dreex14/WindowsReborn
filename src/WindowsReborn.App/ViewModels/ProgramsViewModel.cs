@@ -440,6 +440,10 @@ public partial class ProgramsViewModel : ObservableObject
         var message = Loc.T("programs.confirm.body", programs.Count + apps.Count);
         if (skipped > 0) message += "\n\n" + Loc.T("programs.confirm.skipped", skipped);
         if (manual > 0) message += "\n\n" + Loc.T("programs.confirm.manual", manual);
+        // Los .exe de GitHub no pasan por WinGet ni por la web del fabricante: se nombra cada repo
+        // para que una configuración ajena no pueda colar un programa sin que se vea.
+        if (apps.Count > 0)
+            message += "\n\n" + Loc.T("programs.confirm.github") + "\n" + string.Join("\n", apps.Select(g => "• github.com/" + g.Repo));
         if (!await Dialogs.ConfirmAsync(Loc.T("programs.confirm.title"), message, Loc.T("programs.install")))
             return;
 

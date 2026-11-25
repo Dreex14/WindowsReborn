@@ -211,6 +211,7 @@ S = {
     "programs.nothing-selected": ("No has marcado ningún programa.", "You haven't ticked any program."),
     "programs.nothing-all-installed": ("Todo lo marcado ya está instalado y al día.", "Everything ticked is already installed and up to date."),
     "programs.confirm.title": ("Instalar programas", "Install programs"),
+    "programs.confirm.github": ("Programas de GitHub que se descargarán y ejecutarán (instala solo repos en los que confíes):", "GitHub programs that will be downloaded and run (only install repos you trust):"),
     "programs.confirm.body": ("Se descargarán e instalarán {0} programas, uno detrás de otro, siempre en su última versión. Algunos instaladores pedirán permiso de administrador.\n\nAl continuar aceptas los términos de licencia de cada programa.",
                               "{0} programs will be downloaded and installed one after another, always the latest version. Some installers will ask for administrator permission.\n\nBy continuing you accept each program's license terms."),
     "programs.confirm.skipped": ("{0} ya están instalados y se saltarán.", "{0} are already installed and will be skipped."),

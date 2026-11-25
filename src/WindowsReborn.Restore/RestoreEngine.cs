@@ -115,6 +115,7 @@ public static class RestoreEngine
             try
             {
                 var path = SafePath.Combine(target.TargetFolder!, file.Relative);
+                if (IsProtectedTarget(path)) throw new UnsafePathException(file.Relative, "startup-folder");
                 plan.Items.Add(new RestorePlanItem(file, target.Category, path, File.Exists(path)));
             }
             catch (UnsafePathException)
@@ -127,10 +128,29 @@ public static class RestoreEngine
         {
             if (!byId.TryGetValue(dir.Category, out var target) || target.OnlyRelative is not null)
                 continue;
-            try { plan.Directories.Add((target.Category, SafePath.Combine(target.TargetFolder!, dir.Relative))); }
+            try
+            {
+                var path = SafePath.Combine(target.TargetFolder!, dir.Relative);
+                if (IsProtectedTarget(path)) throw new UnsafePathException(dir.Relative, "startup-folder");
+                plan.Directories.Add((target.Category, path));
+            }
             catch (UnsafePathException) { plan.InvalidPaths.Add(dir.Relative); }
         }
         return plan;
+    }
+
+    /// <summary>
+    /// Carpetas donde un backup nunca escribe: lo que hay en «Inicio» se ejecuta solo al
+    /// iniciar sesión, así que un zip manipulado podría colar ahí un programa.
+    /// </summary>
+    public static bool IsProtectedTarget(string path)
+    {
+        foreach (var folder in new[] { Environment.SpecialFolder.Startup, Environment.SpecialFolder.CommonStartup })
+        {
+            var f = Environment.GetFolderPath(folder);
+            if (f.Length > 0 && SafePath.IsSameOrInside(path, f)) return true;
+        }
+        return false;
     }
 
     /// <summary>Procesos que impiden restaurar ahora (la app debe estar cerrada).</summary>

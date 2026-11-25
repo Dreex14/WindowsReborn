@@ -6,6 +6,8 @@
     <AssemblyName>WindowsReborn</AssemblyName>
     <RootNamespace>WindowsReborn.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Program.Main atiende la copia elevada antes de cargar WPF. -->
+    <StartupObject>WindowsReborn.App.Program</StartupObject>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 

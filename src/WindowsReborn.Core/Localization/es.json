@@ -206,6 +206,7 @@
   "programs.cat.security": "Seguridad y VPN",
   "programs.cat.utilities": "Utilidades",
   "programs.confirm.body": "Se descargarán e instalarán {0} programas, uno detrás de otro, siempre en su última versión. Algunos instaladores pedirán permiso de administrador.\n\nAl continuar aceptas los términos de licencia de cada programa.",
+  "programs.confirm.github": "Programas de GitHub que se descargarán y ejecutarán (instala solo repos en los que confíes):",
   "programs.confirm.manual": "{0} no permiten descarga automática: se abrirá su web oficial o la Microsoft Store para que pulses «Descargar» u «Obtener».",
   "programs.confirm.skipped": "{0} ya están instalados y se saltarán.",
   "programs.confirm.title": "Instalar programas",

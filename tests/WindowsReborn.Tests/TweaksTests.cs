@@ -326,4 +326,42 @@ public class TweaksTests
         var loaded = await TweakPreferences.LoadAsync(path);
         Assert.Equal("on", loaded.Selections["EXPLORER.SHOW-EXTENSIONS"]);
     }
+
+    [Fact]
+    public void Elevated_copy_rejects_a_changed_request_and_writes_nothing_back()
+    {
+        using var tmp = new TempDir();
+        var file = Path.Combine(tmp.Root, "req.json");
+        var json = WindowsReborn.Core.Configuration.Json.Serialize(new ElevatedRequest());
+        File.WriteAllText(file, json);
+        var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(json)));
+
+        // Un byte cambiado después de calcular el hash: se rechaza sin ejecutar nada.
+        File.WriteAllText(file, json + " ");
+        Assert.Equal(ElevatedHost.BadRequest, ElevatedHost.Run(file, hash));
+        Assert.Equal(ElevatedHost.BadRequest, ElevatedHost.Run(Path.Combine(tmp.Root, "no-existe.json"), hash));
+
+        // Petición íntegra y vacía: correcta. Nunca deja archivos de respuesta.
+        File.WriteAllText(file, json);
+        Assert.Equal(ElevatedHost.Ok, ElevatedHost.Run(file, hash));
+        Assert.Single(Directory.GetFiles(tmp.Root));
+
+        // Fuera del catálogo: rechazada.
+        var bad = new ElevatedRequest { Ops = [new RegOp(RegOpType.SetValue, RegHive.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", "x", RegKind.String, "malo.exe")] };
+        var badJson = WindowsReborn.Core.Configuration.Json.Serialize(bad);
+        File.WriteAllText(file, badJson);
+        Assert.Equal(ElevatedHost.NotAllowed, ElevatedHost.Run(file, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(badJson)))));
+
+        Assert.Equal(false, ElevatedHost.FromExitCode(ElevatedHost.RestorePointFailed, true).RestorePointCreated);
+        Assert.True(ElevatedHost.FromExitCode(ElevatedHost.Ok, true).Ok);
+    }
+
+    [Fact]
+    public void Restore_never_writes_into_the_startup_folder()
+    {
+        var startup = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        Assert.True(WindowsReborn.Restore.RestoreEngine.IsProtectedTarget(Path.Combine(startup, "x.exe")));
+        Assert.True(WindowsReborn.Restore.RestoreEngine.IsProtectedTarget(Path.Combine(startup, "sub", "x.lnk")));
+        Assert.False(WindowsReborn.Restore.RestoreEngine.IsProtectedTarget(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft", "options.txt")));
+    }
 }

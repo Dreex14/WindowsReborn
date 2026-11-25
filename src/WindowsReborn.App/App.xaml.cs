@@ -13,14 +13,6 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Copia elevada: aplica un lote de cambios del catálogo y termina, sin interfaz.
-        var elevated = Array.IndexOf(e.Args, Tweaks.ElevatedHost.Argument);
-        if (elevated >= 0 && elevated + 1 < e.Args.Length)
-        {
-            Shutdown(Tweaks.ElevatedHost.Run(e.Args[elevated + 1]));
-            return;
-        }
-
         DispatcherUnhandledException += OnUnhandled;
 
         await AppServices.InitializeAsync();
